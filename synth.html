@@ -1,0 +1,695 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Psy Beard Alpha Ωmega - Psy Bass Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;700&family=Permanent+Marker&display=swap');
+
+        :root {
+            --step-color: #ff4da6;
+            --ui-accent: #00f3c3; 
+            --led-on: #999999;
+            --wood-dark: #111;     
+            --metal-panel: #151515;
+            --text-print: #d9d9d9;
+        }
+
+        * { box-sizing: border-box; touch-action: none; -webkit-user-select: none; }
+        body { margin: 0; background: #050505; color: var(--text-print); font-family: 'Chivo Mono', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 10px; }
+        .rack { background: var(--wood-dark); background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); padding: 20px; border-radius: 8px; border: 4px solid #111; box-shadow: 0 30px 80px rgba(0,0,0,1); position: relative; }
+        .panel { background: var(--metal-panel); background-image: linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 3px 100%; border: 2px solid #333; padding: 25px; border-radius: 2px; width: 96vw; max-width: 960px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+
+        .header-box { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #333; }
+
+        .title { font-family: 'Permanent Marker', cursive; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: 1px; text-shadow: 0 0 5px var(--ui-accent), 0 0 10px var(--ui-accent); -webkit-text-stroke: 1px rgba(0,0,0,0.5); text-stroke: 1px rgba(0,0,0,0.5); cursor: pointer; transition: all 0.3s ease; }
+        .title:hover { text-shadow: 0 0 10px #fff, 0 0 20px var(--ui-accent); }
+
+        .lcd-container { display: flex; align-items: center; gap: 8px; position: absolute; left: 50%; transform: translateX(-50%); }
+        .lcd-display { background: #000; width: 220px; height: 38px; border: 2px solid var(--ui-accent); border-radius: 4px; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; box-shadow: inset 0 0 8px var(--ui-accent), 0 0 5px var(--ui-accent); transition: all 0.5s ease; }
+        .lcd-text-top { font-size: 8px; color: var(--ui-accent); letter-spacing: 2px; text-transform: uppercase; font-weight: bold; opacity: 0.8; }
+        .lcd-text-main { font-size: 12px; color: var(--ui-accent); font-weight: bold; letter-spacing: 1px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+        .lcd-btn { background: #000; border: 1px solid var(--ui-accent); color: var(--ui-accent); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; border-radius: 3px; font-weight: bold; box-shadow: 0 0 5px var(--ui-accent); transition: all 0.3s ease; }
+        .lcd-btn:active { background: #111; transform: scale(0.95); }
+
+        .save-btn { background: #000; color: #ff5555; border-color: #ff3333; font-size: 8px; box-shadow: 0 0 5px #ff3333; }
+        .save-btn.active { color: #55ff55; border-color: #33ff33; box-shadow: 0 0 8px #33ff33; }
+
+        .right-header-controls { display: flex; align-items: center; gap: 15px; }
+        .skin-btn { font-family: 'Chivo Mono', monospace; font-size: 8px; padding: 6px 10px; background: #000; border: 2px solid var(--ui-accent); color: var(--ui-accent); box-shadow: inset 0 0 5px var(--ui-accent), 0 0 5px var(--ui-accent); border-radius: 3px; cursor: pointer; text-transform: uppercase; height: 30px; font-weight: bold; transition: all 0.5s ease; }
+        .skin-btn:active { background: #111; transform: scale(0.95); }
+
+        .vol-header-box { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .vol-label { font-size: 7px; color: var(--ui-accent); text-transform: uppercase; font-weight: 700; text-shadow: 0 0 3px var(--ui-accent); }
+        .vol-knob-wrapper { position: relative; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; cursor: ns-resize; }
+        .vol-led-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--ui-accent) var(--v, 0deg), #333 0deg); mask: radial-gradient(transparent 58%, black 60%); -webkit-mask: radial-gradient(transparent 58%, black 60%); transform: rotate(-140deg); }
+        .vol-knob { width: 18px; height: 18px; background: #111; border-radius: 50%; border: 1px solid #444; z-index: 2; }
+
+        .seq-row { display: grid; grid-template-columns: repeat(16, 1fr); gap: 6px; margin-bottom: 8px; }
+        .step-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity 0.3s ease, filter 0.3s ease; }
+        .step-unit.disabled { opacity: 0.15; filter: grayscale(1); pointer-events: none; }
+
+        .step { width: 100%; height: 35px; background: #2a2a2a; border: 1px solid #444; cursor: pointer; border-radius: 2px; transition: background 0.2s; }
+        .step.on { background: var(--step-color); box-shadow: 0 0 15px var(--step-color), 0 0 5px #fff; border-color: #fff; }
+        .step.now { border: 2px solid #fff; transform: scale(1.05); z-index: 5; }
+
+        .note-sel, .oct-sel { width: 100%; background: #000; color: #666; border: 1px solid #333; font-size: 8px; outline: none; text-align: center; cursor: pointer; }
+        .len-selector { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; margin: 15px 0; padding: 8px; background: #000; border-radius: 4px; border: 1px solid #333; }
+
+        .len-btn { height: 22px; background: #1a1a1a; border: 1px solid #444; color: #666; font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+        .len-btn.active { background: #000; color: var(--ui-accent); border-color: var(--ui-accent); box-shadow: 0 0 10px var(--ui-accent); }
+
+        .controls { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 25px; position: relative; }
+        .k-box { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative;}
+        .k-label { font-size: 8px; color: var(--ui-accent); text-transform: uppercase; font-weight: 700; text-align: center; text-shadow: 0 0 5px var(--ui-accent); transition: all 0.5s ease; }
+
+        .knob-row-layout { display: flex; align-items: center; gap: 6px; position: relative; }
+
+        .k-knob-wrapper { position: relative; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: ns-resize; }
+        .k-led-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--ui-accent) var(--v, 0deg), #333 0deg); mask: radial-gradient(transparent 58%, black 60%); -webkit-mask: radial-gradient(transparent 58%, black 60%); transform: rotate(-140deg); transition: background 0.3s; }
+        .k-knob { width: 32px; height: 32px; background: #111; border-radius: 50%; border: 2px solid #333; z-index: 2; box-shadow: 2px 4px 6px #000; }
+        .k-val { font-size: 8px; color: #fff; font-weight: 700; margin-top: 2px; text-align: center; }
+
+        .wave-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px; width: 60px; }
+        .w-btn { font-size: 8px; padding: 5px 2px; background: #111; border: 1px solid #444; color: #555; cursor: pointer; border-radius: 2px; font-weight: bold; transition: all 0.3s ease; }
+        .w-btn.active { color: var(--ui-accent); border-color: var(--ui-accent); background: #000; box-shadow: 0 0 8px var(--ui-accent); }
+
+        .wp-btn { width: 22px; height: 22px; background: #111; border: 1px solid #444; color: #555; font-size: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 2px; transition: all 0.3s ease; font-weight: bold; }
+        .wp-btn.active { color: var(--ui-accent); border-color: var(--ui-accent); background: #000; box-shadow: 0 0 10px var(--ui-accent); }
+
+        .pp-center-container { position: absolute; right: 13%; bottom: 42px; z-index: 10; }
+        .pp-btn { width: 22px; height: 22px; background: #111; border: 1px solid #444; color: #555; font-size: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 2px; transition: all 0.3s ease; font-weight: bold; }
+        .pp-btn.active { color: var(--ui-accent); border-color: var(--ui-accent); background: #000; box-shadow: 0 0 10px var(--ui-accent); }
+
+        .actions-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 15px; }
+        .btn { background: #000; color: var(--ui-accent); border: 1px solid var(--ui-accent); padding: 10px 5px; font-size: 9px; font-family: 'Chivo Mono'; cursor: pointer; border-radius: 3px; text-transform: uppercase; font-weight: 700; box-shadow: 0 0 5px var(--ui-accent); transition: all 0.2s; }
+        .btn:active { transform: scale(0.96); }
+        .btn.active { background: var(--ui-accent); color: #000; box-shadow: 0 0 15px var(--ui-accent); }
+
+        .btn.bypass-on { color: #ff3333 !important; border-color: #ff3333 !important; box-shadow: 0 0 12px #ff3333 !important; }
+        .btn.recording { color: #ff3333 !important; border-color: #ff3333 !important; box-shadow: 0 0 15px #ff3333 !important; background: #000 !important; }
+        .btn.pending { color: var(--ui-accent) !important; border-color: #fff !important; box-shadow: 0 0 15px var(--ui-accent) !important; }
+
+        .signature-container { position: absolute; bottom: -20px; right: 20px; }
+        .signature { font-family: 'Permanent Marker', cursive; font-size: 1.1rem; color: #fff; text-shadow: 0 0 5px var(--ui-accent), 0 0 10px var(--ui-accent); -webkit-text-stroke: 0.5px rgba(0,0,0,0.5); text-stroke: 0.5px rgba(0,0,0,0.5); letter-spacing: 0.5px; }
+
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
+        .modal-content { background: rgba(26, 26, 26, 0.85); border: 2px solid var(--ui-accent); width: 90%; max-width: 600px; max-height: 85vh; border-radius: 4px; box-shadow: 0 0 30px rgba(0,0,0,1); color: #fff; font-family: 'Chivo Mono', monospace; overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #333; flex-shrink: 0; }
+        .modal-title { margin: 0; font-size: 14px; text-transform: uppercase; color: var(--ui-accent); }
+        .close-modal { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
+        .close-modal:hover { color: #fff; }
+        .modal-body { padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-grow: 1; }
+
+        .modal-body::-webkit-scrollbar { width: 22px; }
+        .modal-body::-webkit-scrollbar-track { background: rgba(26, 26, 26, 0.8); border-left: 1px solid #333; }
+        .modal-body::-webkit-scrollbar-thumb { background: rgba(0, 243, 195, 0.4); border-radius: 11px; border: 4px solid rgba(26, 26, 26, 0.8); }
+
+        .modal-category { border: 1px solid #333; padding: 10px; border-radius: 3px; background: rgba(17, 17, 24, 0.6); }
+        .cat-title { font-size: 10px; color: var(--ui-accent); margin-bottom: 8px; border-bottom: 1px solid #222; padding-bottom: 4px; }
+        .preset-item { font-size: 11px; color: #aaa; padding: 4px 6px; cursor: pointer; border-radius: 2px; }
+        .preset-item:hover { background: rgba(34, 34, 34, 0.7); color: #fff; }
+        .preset-item.active { background: var(--ui-accent); color: #000; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="rack">
+    <div class="panel">
+        <div class="header-box">
+            <h1 class="title" onclick="openCreditsModal()">Psy Beard<br>Alpha &Omega;mega</h1>
+
+            <div class="lcd-container">
+                <button class="lcd-btn" onclick="prevPreset()">&lt;</button>
+                <div class="lcd-display" onclick="openPresetModal()" style="cursor: pointer;">
+                    <span class="lcd-text-top" id="lcd-cat">ACID</span>
+                    <span class="lcd-text-main" id="lcd-name">Da Funk 303</span>
+                </div>
+                <button class="lcd-btn" onclick="nextPreset()">&gt;</button>
+                <button class="lcd-btn save-btn" onclick="saveToUser()">SAVE</button>
+            </div>
+
+            <div class="right-header-controls">
+                <div class="vol-header-box">
+                    <span class="vol-label">VOL</span>
+                    <div class="vol-knob-wrapper" id="w-vol">
+                        <div class="vol-led-ring" id="r-vol"></div>
+                        <div class="vol-knob" id="k-vol" data-min="0" data-max="100" data-val="70"></div>
+                    </div>
+                </div>
+                <button id="skin-btn" class="skin-btn" onclick="randomizeSkin()">Skin</button>
+            </div>
+        </div>
+
+        <div id="seq" class="seq-row"></div>
+        <div class="len-selector" id="len-btns"></div>
+        <div class="controls" id="knob-container">
+            <div class="pp-center-container"><div class="pp-btn" id="pp-toggle" onclick="togglePingPong()">PP</div></div>
+        </div>
+        <div class="actions-grid">
+            <button id="start" class="btn" onclick="toggleAudio()">PLAY/STOP</button>
+            <button id="mode" class="btn" onclick="switchMode()">MODE:LEAD</button>
+            <button id="bypass-btn" class="btn" onclick="toggleBypass()">FX BYPASS</button>
+            <button class="btn" onclick="randSeq()">RAND SEQ</button>
+            <button class="btn" onclick="panic()">PANIC</button>
+            <button id="rec-btn" class="btn" onclick="toggleRec()">REC WAV</button>
+        </div>
+        <div class="signature-container"><div class="signature">by Lux Stiffmeister</div></div>
+    </div>
+</div>
+
+<div id="presetModal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h2 class="modal-title">Preset List</h2>
+            <button class="close-modal" onclick="document.getElementById('presetModal').style.display='none'">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-preset-list"></div>
+    </div>
+</div>
+
+<script>
+let ctx, mainOsc, subOsc, subGain, noiseNode, noiseGain, fmGain, filter, masterGain, noteGain, driveNode, delayNode, delayGain, reverbNode, reverbGain, recDest, panner;
+let isStarted = false, currentStep = 0, synthMode = 'LEAD', recorder, chunks = [], recording = false, loopSteps = 16, fxBypass = false, isPingPong = false, currentWave = 'square', isPinkNoise = false;
+let pendingRec = false, pendingStop = false;
+
+const state = { bpm:138, swg:0, freq:50, noise:0, det:5, atk:0.005, len:0.12, sub:0, cut:1200, res:15, drv:30, dly:10, rev:5, fm:0, vol:70 };
+let stepData = Array(16).fill().map(() => ({ on: false, note: 1, oct: 1, noteIdx: 0 }));
+const noteMultipliers = [1, 1.059, 1.122, 1.189, 1.26, 1.335, 1.414, 1.498, 1.587, 1.682, 1.782, 1.888];
+const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+const knobDefs = [
+    {id:'bpm', min:80, max:200, label:'BPM'},
+    {id:'swg', min:0, max:100, label:'SWING'},
+    {id:'freq', min:30, max:300, label:'ROOT'},
+    {id:'cut', min:100, max:8000, label:'CUTOFF'},
+    {id:'res', min:0, max:30, label:'RESO'},
+    {id:'atk', min:0.005, max:1, label:'ATTACK'},
+    {id:'len', min:0.05, max:1.5, label:'LENGTH'},
+
+    {id:'sub', min:0, max:100, label:'SUB'},
+    {id:'noise', min:0, max:100, label:'NOISE', hasWP:true},
+    {id:'det', min:0, max:100, label:'DETUNE'},
+    {id:'drv', min:1, max:100, label:'DRIVE'},
+    {id:'fm', min:0, max:2000, label:'FM'},
+    {id:'dly', min:0, max:100, label:'DELAY'},
+    {id:'rev', min:0, max:100, label:'REVERB'}
+];
+
+const s_off = [0,0,1];
+const s_on = [1,0,1];
+const s_hi = [1,0,2];
+const s_acc = [1,7,1];
+
+const pr_daFunk = [[1,2,1], [0,0,1], [1,2,1], [0,0,1], [1,5,1], [0,0,1], [1,2,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [1,2,1], [1,0,1], [0,0,1], [1,2,1], [0,0,1]];
+const pr_acid1 = [[1,0,1], [0,0,1], [1,0,1], [1,3,1], [1,0,2], [0,0,1], [1,0,1], [1,0,1], [1,3,1], [0,0,1], [1,0,1], [1,0,2], [1,0,1], [0,0,1], [1,3,1], [1,0,1]];
+const pr_rolling = [[0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1]];
+const pr_hiAlt = [[1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2]];
+const pr_gallop = [[1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1]];
+const pr_perc = [[1,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1]];
+const pr_psyLead = [[1,0,2], [0,0,1], [1,3,2], [1,0,2], [0,0,1], [1,7,2], [0,0,1], [1,10,2], [1,0,2], [0,0,1], [1,5,2], [1,0,2], [0,0,1], [1,8,2], [0,0,1], [1,2,2]];
+const pr_upAndDown = [[1,0,1], [1,2,1], [1,3,1], [1,5,1], [1,7,1], [1,5,1], [1,3,1], [1,2,1], [1,0,1], [1,2,1], [1,3,1], [1,5,1], [1,7,1], [1,5,1], [1,3,1], [1,2,1]];
+
+const presets = {
+    ACID: [
+        {name: 'Da Funk 303', wave: 'square', p: {bpm:111, freq:48, noise:0, det:5, atk:0.005, len:0.18, sub:0, cut:550, res:24, drv:85, dly:10, rev:5, fm:0}, seq: pr_daFunk},
+        {name: 'Psy Resonance', wave: 'square', p: {bpm:140, freq:55, noise:2, det:5, atk:0.005, len:0.12, sub:5, cut:1400, res:25, drv:30, dly:15, rev:10, fm:100}, seq: pr_acid1},
+        {name: 'Mind Bender', wave: 'sawtooth', p: {bpm:142, freq:60, noise:5, det:10, atk:0.005, len:0.10, sub:0, cut:2200, res:26, drv:40, dly:20, rev:15, fm:250}, seq: pr_hiAlt},
+        {name: 'Liquid State', wave: 'square', p: {bpm:138, freq:50, noise:0, det:2, atk:0.010, len:0.15, sub:0, cut:900, res:22, drv:20, dly:25, rev:20, fm:0}, seq: pr_upAndDown},
+        {name: 'Alien Speak', wave: 'sawtooth', p: {bpm:145, freq:65, noise:8, det:15, atk:0.005, len:0.08, sub:2, cut:3000, res:28, drv:50, dly:15, rev:10, fm:500}, seq: pr_psyLead},
+        {name: 'Neuro Acid', wave: 'square', p: {bpm:140, freq:45, noise:5, det:30, atk:0.005, len:0.14, sub:0, cut:1100, res:24, drv:60, dly:10, rev:5, fm:200}, seq: pr_acid1},
+        {name: 'Brain Wash', wave: 'sawtooth', p: {bpm:144, freq:58, noise:2, det:8, atk:0.005, len:0.11, sub:0, cut:1800, res:27, drv:35, dly:30, rev:15, fm:150}, seq: pr_rolling},
+        {name: 'Squelch Lab', wave: 'square', p: {bpm:138, freq:52, noise:10, det:12, atk:0.005, len:0.09, sub:0, cut:1600, res:28, drv:45, dly:20, rev:10, fm:400}, seq: pr_hiAlt},
+        {name: 'Psychedelic Fog', wave: 'sawtooth', p: {bpm:140, freq:62, noise:15, det:5, atk:0.020, len:0.20, sub:0, cut:800, res:15, drv:25, dly:40, rev:40, fm:50}, seq: pr_upAndDown},
+        {name: 'Vortex Generator', wave: 'square', p: {bpm:143, freq:48, noise:3, det:20, atk:0.005, len:0.13, sub:5, cut:2500, res:23, drv:55, dly:15, rev:15, fm:600}, seq: pr_psyLead},
+        {name: 'Mental Melt', wave: 'sawtooth', p: {bpm:137, freq:50, noise:0, det:40, atk:0.005, len:0.08, sub:0, cut:1300, res:20, drv:30, dly:10, rev:5, fm:0}, seq: pr_acid1},
+        {name: 'Chemical X', wave: 'square', p: {bpm:141, freq:56, noise:5, det:6, atk:0.005, len:0.16, sub:0, cut:1500, res:25, drv:40, dly:20, rev:20, fm:300}, seq: pr_rolling},
+        {name: 'Trance Mission', wave: 'sawtooth', p: {bpm:145, freq:70, noise:2, det:15, atk:0.005, len:0.10, sub:0, cut:2100, res:26, drv:20, dly:15, rev:25, fm:100}, seq: pr_hiAlt},
+        {name: 'Silver Box', wave: 'square', p: {bpm:135, freq:42, noise:0, det:0, atk:0.005, len:0.18, sub:0, cut:700, res:29, drv:50, dly:10, rev:0, fm:0}, seq: pr_upAndDown},
+        {name: 'Acid Rain', wave: 'sawtooth', p: {bpm:139, freq:54, noise:20, det:10, atk:0.005, len:0.07, sub:0, cut:3500, res:22, drv:35, dly:35, rev:30, fm:200}, seq: pr_psyLead},
+        {name: 'Dimension 5', wave: 'square', p: {bpm:142, freq:60, noise:4, det:25, atk:0.005, len:0.12, sub:0, cut:1700, res:24, drv:45, dly:15, rev:15, fm:450}, seq: pr_acid1},
+        {name: 'Hallucinogen', wave: 'sawtooth', p: {bpm:144, freq:48, noise:6, det:12, atk:0.005, len:0.11, sub:0, cut:2000, res:27, drv:30, dly:25, rev:20, fm:350}, seq: pr_rolling},
+        {name: 'Twisted Mind', wave: 'square', p: {bpm:140, freq:64, noise:10, det:8, atk:0.005, len:0.09, sub:0, cut:1250, res:28, drv:65, dly:20, rev:10, fm:150}, seq: pr_hiAlt},
+        {name: 'Glow Stick', wave: 'sawtooth', p: {bpm:138, freq:50, noise:2, det:4, atk:0.010, len:0.25, sub:0, cut:1000, res:18, drv:15, dly:30, rev:35, fm:50}, seq: pr_upAndDown},
+        {name: 'Full Moon Acid', wave: 'square', p: {bpm:146, freq:66, noise:5, det:18, atk:0.005, len:0.10, sub:2, cut:2800, res:26, drv:40, dly:15, rev:15, fm:500}, seq: pr_psyLead}
+    ],
+    BASS: [
+        {name: 'Psy Rolling Clean', wave: 'sawtooth', p: {bpm:138, freq:50, noise:0, det:5, atk:0.005, len:0.08, sub:5, cut:600, res:10, drv:20, dly:0, rev:0, fm:20}, seq: pr_rolling},
+        {name: 'Tight Gallop', wave: 'sawtooth', p: {bpm:140, freq:48, noise:0, det:3, atk:0.005, len:0.07, sub:0, cut:700, res:12, drv:25, dly:0, rev:0, fm:0}, seq: pr_gallop},
+        {name: 'Laser Bass', wave: 'square', p: {bpm:142, freq:52, noise:2, det:10, atk:0.005, len:0.09, sub:0, cut:900, res:15, drv:30, dly:5, rev:0, fm:50}, seq: pr_rolling},
+        {name: 'Nano Driver', wave: 'sawtooth', p: {bpm:138, freq:45, noise:0, det:1, atk:0.005, len:0.07, sub:10, cut:500, res:8, drv:15, dly:0, rev:0, fm:10}, seq: pr_gallop},
+        {name: 'Psy Shaker', wave: 'square', p: {bpm:144, freq:55, noise:5, det:8, atk:0.005, len:0.08, sub:0, cut:1100, res:14, drv:35, dly:10, rev:0, fm:80}, seq: pr_rolling},
+        {name: 'Deep Forest', wave: 'sawtooth', p: {bpm:135, freq:40, noise:10, det:15, atk:0.005, len:0.11, sub:15, cut:450, res:5, drv:40, dly:0, rev:5, fm:100}, seq: pr_rolling},
+        {name: 'Clicky Attack', wave: 'square', p: {bpm:140, freq:50, noise:15, det:2, atk:0.005, len:0.06, sub:0, cut:1500, res:18, drv:25, dly:0, rev:0, fm:0}, seq: pr_gallop},
+        {name: 'Trident Psy', wave: 'sawtooth', p: {bpm:142, freq:48, noise:0, det:6, atk:0.005, len:0.08, sub:5, cut:800, res:11, drv:20, dly:5, rev:0, fm:30}, seq: pr_rolling},
+        {name: 'Hard Driver', wave: 'sawtooth', p: {bpm:138, freq:52, noise:0, det:4, atk:0.005, len:0.10, sub:0, cut:650, res:10, drv:45, dly:0, rev:0, fm:0}, seq: pr_rolling},
+        {name: 'Space Hopper', wave: 'square', p: {bpm:145, freq:56, noise:2, det:12, atk:0.005, len:0.07, sub:0, cut:1000, res:16, drv:30, dly:10, rev:5, fm:60}, seq: pr_gallop},
+        {name: 'Alien Pulse', wave: 'sawtooth', p: {bpm:141, freq:46, noise:5, det:20, atk:0.005, len:0.09, sub:0, cut:750, res:13, drv:35, dly:0, rev:0, fm:150}, seq: pr_rolling},
+        {name: 'Crystal Bass', wave: 'square', p: {bpm:137, freq:54, noise:0, det:2, atk:0.005, len:0.08, sub:0, cut:1200, res:8, drv:15, dly:5, rev:10, fm:0}, seq: pr_rolling},
+        {name: 'Rumble Machine', wave: 'sawtooth', p: {bpm:140, freq:42, noise:8, det:10, atk:0.005, len:0.12, sub:20, cut:400, res:4, drv:50, dly:0, rev:10, fm:50}, seq: pr_rolling},
+        {name: 'Octave Jumper', wave: 'sawtooth', p: {bpm:143, freq:50, noise:0, det:5, atk:0.005, len:0.08, sub:0, cut:850, res:12, drv:20, dly:0, rev:0, fm:0}, seq: pr_hiAlt},
+        {name: 'Cyber Punch', wave: 'square', p: {bpm:139, freq:48, noise:4, det:6, atk:0.005, len:0.07, sub:5, cut:950, res:15, drv:40, dly:0, rev:0, fm:40}, seq: pr_rolling},
+        {name: 'Warp Drive', wave: 'sawtooth', p: {bpm:146, freq:55, noise:3, det:25, atk:0.005, len:0.10, sub:0, cut:1100, res:14, drv:30, dly:10, rev:5, fm:200}, seq: pr_gallop},
+        {name: 'Pure Saw Roll', wave: 'sawtooth', p: {bpm:138, freq:50, noise:0, det:0, atk:0.005, len:0.08, sub:0, cut:550, res:5, drv:10, dly:0, rev:0, fm:0}, seq: pr_rolling},
+        {name: 'Metal Mouth', wave: 'square', p: {bpm:142, freq:44, noise:12, det:15, atk:0.005, len:0.09, sub:0, cut:1300, res:20, drv:55, dly:5, rev:0, fm:300}, seq: pr_rolling},
+        {name: 'Smooth Operator', wave: 'sawtooth', p: {bpm:136, freq:52, noise:0, det:3, atk:0.010, len:0.12, sub:10, cut:450, res:6, drv:15, dly:0, rev:5, fm:10}, seq: pr_rolling},
+        {name: 'End Game Bass', wave: 'square', p: {bpm:145, freq:48, noise:2, det:8, atk:0.005, len:0.08, sub:0, cut:1050, res:11, drv:35, dly:5, rev:0, fm:70}, seq: pr_gallop}
+    ],
+    LEAD: [
+        {name: 'Neon Laser', wave: 'sawtooth', p: {bpm:140, freq:110, noise:0, det:30, atk:0.005, len:0.15, sub:0, cut:3500, res:15, drv:30, dly:20, rev:20, fm:100}, seq: pr_psyLead},
+        {name: 'FM Screamer', wave: 'square', p: {bpm:142, freq:120, noise:5, det:15, atk:0.005, len:0.10, sub:0, cut:2800, res:22, drv:40, dly:15, rev:15, fm:800}, seq: pr_psyLead},
+        {name: 'Psy Trance Saw', wave: 'sawtooth', p: {bpm:138, freq:100, noise:0, det:50, atk:0.005, len:0.12, sub:0, cut:4000, res:18, drv:20, dly:25, rev:30, fm:50}, seq: pr_acid1},
+        {name: 'Cyber Stabs', wave: 'square', p: {bpm:144, freq:130, noise:10, det:20, atk:0.005, len:0.08, sub:0, cut:2500, res:25, drv:45, dly:10, rev:10, fm:300}, seq: pr_perc},
+        {name: 'Hyper Beam', wave: 'sawtooth', p: {bpm:145, freq:140, noise:2, det:40, atk:0.005, len:0.18, sub:0, cut:5000, res:12, drv:25, dly:30, rev:40, fm:150}, seq: pr_psyLead},
+        {name: 'Mind Control', wave: 'square', p: {bpm:138, freq:90, noise:0, det:10, atk:0.005, len:0.20, sub:0, cut:1500, res:26, drv:35, dly:20, rev:25, fm:400}, seq: pr_upAndDown},
+        {name: 'Starlight', wave: 'triangle', p: {bpm:140, freq:150, noise:0, det:5, atk:0.010, len:0.25, sub:0, cut:2200, res:10, drv:10, dly:40, rev:50, fm:50}, seq: pr_psyLead},
+        {name: 'Bouncing Ball', wave: 'sawtooth', p: {bpm:142, freq:115, noise:15, det:25, atk:0.005, len:0.06, sub:0, cut:3200, res:20, drv:50, dly:15, rev:10, fm:200}, seq: pr_perc},
+        {name: 'Vocaloid Lead', wave: 'square', p: {bpm:139, freq:105, noise:0, det:8, atk:0.005, len:0.14, sub:0, cut:1800, res:28, drv:30, dly:15, rev:15, fm:600}, seq: pr_psyLead},
+        {name: 'Digital Rain', wave: 'sawtooth', p: {bpm:146, freq:125, noise:25, det:35, atk:0.005, len:0.09, sub:0, cut:4500, res:15, drv:40, dly:30, rev:20, fm:100}, seq: pr_psyLead},
+        {name: 'Goa Spirit', wave: 'sawtooth', p: {bpm:144, freq:95, noise:0, det:60, atk:0.005, len:0.13, sub:0, cut:2600, res:20, drv:25, dly:20, rev:35, fm:0}, seq: pr_upAndDown},
+        {name: 'Laser Harp', wave: 'square', p: {bpm:140, freq:135, noise:2, det:4, atk:0.005, len:0.11, sub:0, cut:3000, res:14, drv:15, dly:25, rev:30, fm:200}, seq: pr_psyLead},
+        {name: 'Acid Lead 1', wave: 'sawtooth', p: {bpm:141, freq:85, noise:5, det:15, atk:0.005, len:0.16, sub:0, cut:1900, res:27, drv:45, dly:15, rev:10, fm:350}, seq: pr_acid1},
+        {name: 'Fairy Dust', wave: 'triangle', p: {bpm:138, freq:160, noise:10, det:12, atk:0.005, len:0.08, sub:0, cut:3800, res:16, drv:20, dly:35, rev:45, fm:100}, seq: pr_perc},
+        {name: 'Neuro Transmit', wave: 'square', p: {bpm:143, freq:110, noise:8, det:30, atk:0.005, len:0.10, sub:0, cut:2200, res:24, drv:55, dly:15, rev:15, fm:700}, seq: pr_psyLead},
+        {name: 'Cosmic Horn', wave: 'sawtooth', p: {bpm:137, freq:75, noise:0, det:40, atk:0.015, len:0.30, sub:0, cut:1200, res:12, drv:30, dly:30, rev:40, fm:50}, seq: pr_upAndDown},
+        {name: 'Pluck Monster', wave: 'square', p: {bpm:142, freq:115, noise:4, det:10, atk:0.005, len:0.07, sub:0, cut:2700, res:18, drv:35, dly:20, rev:15, fm:150}, seq: pr_perc},
+        {name: 'Trance Gate', wave: 'sawtooth', p: {bpm:140, freq:100, noise:0, det:25, atk:0.005, len:0.12, sub:0, cut:3400, res:15, drv:20, dly:25, rev:25, fm:0}, seq: pr_rolling},
+        {name: 'Ethereal Wave', wave: 'sine', p: {bpm:136, freq:145, noise:0, det:5, atk:0.020, len:0.40, sub:0, cut:1600, res:5, drv:10, dly:40, rev:60, fm:100}, seq: pr_psyLead},
+        {name: 'Final Boss Lead', wave: 'sawtooth', p: {bpm:145, freq:120, noise:12, det:45, atk:0.005, len:0.14, sub:0, cut:4200, res:21, drv:50, dly:20, rev:20, fm:400}, seq: pr_psyLead}
+    ],
+    PERC: [
+        {name: 'Psy Kick 1', wave: 'sine', p: {bpm:138, freq:50, noise:5, det:0, atk:0.005, len:0.08, sub:0, cut:400, res:5, drv:60, dly:0, rev:0, fm:50}, seq: pr_perc},
+        {name: 'Psy Kick 2', wave: 'triangle', p: {bpm:140, freq:55, noise:2, det:0, atk:0.005, len:0.07, sub:0, cut:500, res:8, drv:45, dly:0, rev:0, fm:30}, seq: pr_perc},
+        {name: 'Tik Tok Click', wave: 'square', p: {bpm:142, freq:150, noise:30, det:0, atk:0.005, len:0.04, sub:0, cut:3000, res:10, drv:30, dly:10, rev:5, fm:0}, seq: pr_perc},
+        {name: 'Hi Hat Open', wave: 'sawtooth', p: {bpm:138, freq:200, noise:80, det:90, atk:0.005, len:0.10, sub:0, cut:6000, res:5, drv:20, dly:15, rev:20, fm:0}, seq: [[0,0,1], [1,0,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1]]},
+        {name: 'Zap Perc', wave: 'sawtooth', p: {bpm:140, freq:120, noise:10, det:5, atk:0.005, len:0.05, sub:0, cut:2500, res:20, drv:40, dly:15, rev:10, fm:500}, seq: pr_perc},
+        {name: 'Psy Woodblock', wave: 'triangle', p: {bpm:144, freq:90, noise:5, det:0, atk:0.005, len:0.06, sub:0, cut:1800, res:15, drv:15, dly:10, rev:15, fm:100}, seq: pr_perc},
+        {name: 'Tom Fill', wave: 'sine', p: {bpm:135, freq:70, noise:10, det:0, atk:0.005, len:0.12, sub:0, cut:600, res:4, drv:30, dly:20, rev:20, fm:50}, seq: pr_perc},
+        {name: 'Bongo Psy', wave: 'sine', p: {bpm:142, freq:110, noise:15, det:0, atk:0.005, len:0.07, sub:0, cut:1000, res:12, drv:20, dly:10, rev:10, fm:200}, seq: pr_perc},
+        {name: 'Noise Snare', wave: 'square', p: {bpm:138, freq:80, noise:90, det:50, atk:0.005, len:0.15, sub:0, cut:2000, res:10, drv:50, dly:0, rev:30, fm:0}, seq: [[0,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1]]},
+        {name: 'Cyber Rim', wave: 'triangle', p: {bpm:140, freq:160, noise:20, det:10, atk:0.005, len:0.05, sub:0, cut:3500, res:18, drv:25, dly:10, rev:15, fm:300}, seq: pr_perc},
+        {name: 'Space Conga', wave: 'sine', p: {bpm:141, freq:130, noise:5, det:0, atk:0.005, len:0.09, sub:0, cut:1200, res:10, drv:15, dly:15, rev:15, fm:150}, seq: pr_perc},
+        {name: 'Alien Shaker', wave: 'square', p: {bpm:145, freq:250, noise:70, det:30, atk:0.005, len:0.03, sub:0, cut:5000, res:8, drv:10, dly:10, rev:10, fm:0}, seq: pr_hiAlt},
+        {name: 'Bubble Pop', wave: 'sine', p: {bpm:138, freq:140, noise:0, det:0, atk:0.005, len:0.05, sub:0, cut:1500, res:25, drv:10, dly:20, rev:20, fm:400}, seq: pr_perc},
+        {name: 'Metal Perc', wave: 'sawtooth', p: {bpm:143, freq:180, noise:40, det:60, atk:0.005, len:0.06, sub:0, cut:4000, res:22, drv:45, dly:15, rev:15, fm:200}, seq: pr_perc},
+        {name: 'Clap Attack', wave: 'triangle', p: {bpm:140, freq:90, noise:85, det:20, atk:0.005, len:0.18, sub:0, cut:2200, res:6, drv:35, dly:0, rev:40, fm:0}, seq: [[0,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1]]},
+        {name: 'Laser Rimshot', wave: 'square', p: {bpm:142, freq:100, noise:25, det:5, atk:0.005, len:0.06, sub:0, cut:2800, res:16, drv:30, dly:10, rev:10, fm:600}, seq: pr_perc},
+        {name: 'Deep Tom', wave: 'sine', p: {bpm:137, freq:60, noise:5, det:0, atk:0.005, len:0.15, sub:0, cut:500, res:5, drv:25, dly:20, rev:25, fm:30}, seq: pr_perc},
+        {name: 'Glass Break', wave: 'triangle', p: {bpm:144, freq:220, noise:30, det:15, atk:0.005, len:0.04, sub:0, cut:4500, res:20, drv:20, dly:15, rev:30, fm:100}, seq: pr_perc},
+        {name: 'Electro Snare', wave: 'square', p: {bpm:138, freq:110, noise:60, det:30, atk:0.005, len:0.12, sub:0, cut:1800, res:12, drv:40, dly:5, rev:25, fm:150}, seq: [[0,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1]]},
+        {name: 'Tribal Hit', wave: 'sawtooth', p: {bpm:141, freq:85, noise:20, det:10, atk:0.005, len:0.09, sub:0, cut:1100, res:15, drv:30, dly:15, rev:20, fm:80}, seq: pr_perc}
+    ],
+    FX: [
+        {name: 'Alien Scanner', wave: 'sawtooth', p: {bpm:138, freq:100, noise:20, det:50, atk:0.010, len:0.30, sub:0, cut:2500, res:20, drv:30, dly:35, rev:40, fm:1500}, seq: pr_psyLead},
+        {name: 'Teleport Warp', wave: 'square', p: {bpm:142, freq:60, noise:5, det:20, atk:0.005, len:0.25, sub:0, cut:1500, res:25, drv:40, dly:30, rev:30, fm:1200}, seq: pr_psyLead},
+        {name: 'UFO Landing', wave: 'sine', p: {bpm:140, freq:150, noise:10, det:5, atk:0.020, len:0.50, sub:0, cut:800, res:10, drv:15, dly:40, rev:50, fm:800}, seq: pr_upAndDown},
+        {name: 'Psy Siren', wave: 'sawtooth', p: {bpm:145, freq:120, noise:0, det:30, atk:0.010, len:0.40, sub:0, cut:3000, res:18, drv:35, dly:25, rev:30, fm:500}, seq: pr_hiAlt},
+        {name: 'Abduction Beam', wave: 'square', p: {bpm:138, freq:80, noise:15, det:15, atk:0.005, len:0.35, sub:0, cut:2200, res:22, drv:45, dly:20, rev:35, fm:1000}, seq: pr_psyLead},
+        {name: 'Radio Noise', wave: 'triangle', p: {bpm:141, freq:200, noise:95, det:90, atk:0.005, len:0.10, sub:0, cut:4000, res:15, drv:50, dly:30, rev:20, fm:2000}, seq: pr_perc},
+        {name: 'Vortex Tunnel', wave: 'sawtooth', p: {bpm:144, freq:50, noise:10, det:40, atk:0.015, len:0.45, sub:0, cut:1200, res:16, drv:25, dly:40, rev:45, fm:600}, seq: pr_upAndDown},
+        {name: 'Mind Warp', wave: 'square', p: {bpm:140, freq:110, noise:5, det:25, atk:0.005, len:0.20, sub:0, cut:3500, res:27, drv:35, dly:15, rev:25, fm:1500}, seq: pr_psyLead},
+        {name: 'Stardust Echo', wave: 'sine', p: {bpm:136, freq:180, noise:5, det:2, atk:0.030, len:0.60, sub:0, cut:2000, res:8, drv:10, dly:50, rev:60, fm:300}, seq: pr_psyLead},
+        {name: 'Hyper Drive FX', wave: 'sawtooth', p: {bpm:146, freq:70, noise:25, det:60, atk:0.005, len:0.15, sub:0, cut:5000, res:14, drv:55, dly:20, rev:20, fm:1800}, seq: pr_hiAlt},
+        {name: 'Alien Bubble', wave: 'sine', p: {bpm:139, freq:140, noise:0, det:0, atk:0.005, len:0.08, sub:0, cut:1500, res:29, drv:20, dly:25, rev:30, fm:700}, seq: pr_perc},
+        {name: 'Cyber Wind', wave: 'sawtooth', p: {bpm:135, freq:40, noise:90, det:80, atk:0.050, len:0.80, sub:0, cut:1000, res:5, drv:15, dly:40, rev:55, fm:100}, seq: pr_upAndDown},
+        {name: 'Laser Grid', wave: 'square', p: {bpm:142, freq:130, noise:10, det:12, atk:0.005, len:0.12, sub:0, cut:3200, res:20, drv:40, dly:15, rev:15, fm:900}, seq: pr_psyLead},
+        {name: 'Galactic Horn', wave: 'sawtooth', p: {bpm:140, freq:65, noise:0, det:35, atk:0.020, len:0.50, sub:0, cut:1400, res:15, drv:30, dly:35, rev:40, fm:400}, seq: pr_upAndDown},
+        {name: 'Brain Zap', wave: 'triangle', p: {bpm:143, freq:160, noise:15, det:10, atk:0.005, len:0.06, sub:0, cut:4500, res:25, drv:45, dly:10, rev:10, fm:1600}, seq: pr_perc},
+        {name: 'Acid Splash', wave: 'square', p: {bpm:138, freq:90, noise:30, det:20, atk:0.005, len:0.18, sub:0, cut:2600, res:26, drv:50, dly:25, rev:25, fm:1100}, seq: pr_psyLead},
+        {name: 'Space Drone', wave: 'sine', p: {bpm:130, freq:45, noise:20, det:15, atk:0.100, len:1.20, sub:0, cut:600, res:4, drv:25, dly:30, rev:50, fm:200}, seq: pr_upAndDown},
+        {name: 'Particle Beam', wave: 'sawtooth', p: {bpm:145, freq:150, noise:40, det:50, atk:0.005, len:0.10, sub:0, cut:5500, res:12, drv:35, dly:20, rev:20, fm:1300}, seq: pr_psyLead},
+        {name: 'Cosmic Sweep', wave: 'square', p: {bpm:140, freq:55, noise:10, det:30, atk:0.040, len:0.70, sub:0, cut:1800, res:18, drv:30, dly:35, rev:45, fm:500}, seq: pr_upAndDown},
+        {name: 'Dimension Hop', wave: 'triangle', p: {bpm:144, freq:120, noise:5, det:15, atk:0.005, len:0.22, sub:0, cut:2800, res:23, drv:40, dly:25, rev:30, fm:1400}, seq: pr_psyLead}
+    ],
+    USER: Array(10).fill().map((_, i) => ({name: `Empty Slot ${i+1}`, wave: 'sawtooth', p: {...state}, seq: Array(16).fill([0, 0, 1]), empty: true}))
+};
+
+const categories = ['ACID', 'BASS', 'LEAD', 'PERC', 'FX', 'USER'];
+let currentCatIdx = 0;
+let currentPreIdx = 0;
+
+const savedUserPresets = localStorage.getItem('psyBeardUserPresets');
+if (savedUserPresets) {
+    presets.USER = JSON.parse(savedUserPresets);
+}
+
+function openPresetModal() {
+    const modal = document.getElementById('presetModal');
+    const listContainer = document.getElementById('modal-preset-list');
+    listContainer.innerHTML = '';
+
+    categories.forEach((cat, catIdx) => {
+        const catBox = document.createElement('div');
+        catBox.className = 'modal-category';
+        const title = document.createElement('div');
+        title.className = 'cat-title';
+        title.innerText = cat;
+        catBox.appendChild(title);
+
+        presets[cat].forEach((pre, preIdx) => {
+            const item = document.createElement('div');
+            item.className = 'preset-item';
+            if(catIdx === currentCatIdx && preIdx === currentPreIdx) item.classList.add('active');
+            item.innerText = pre.name;
+            item.onclick = () => {
+                currentCatIdx = catIdx;
+                currentPreIdx = preIdx;
+                updatePresetDisplay();
+                modal.style.display = 'none';
+            };
+            catBox.appendChild(item);
+        });
+        listContainer.appendChild(catBox);
+    });
+
+    modal.style.display = 'flex';
+}
+
+function closeModal(e) {
+    if(e.target.id === 'presetModal') e.target.style.display = 'none';
+}
+
+function updatePresetDisplay() {
+    const cat = categories[currentCatIdx];
+    const pre = presets[cat][currentPreIdx];
+    document.getElementById('lcd-cat').innerText = cat;
+    document.getElementById('lcd-name').innerText = pre.name;
+
+    setWave(pre.wave);
+    for (let key in pre.p) {
+        state[key] = pre.p[key];
+        const el = document.getElementById(`k-${key}`);
+        if (el) {
+            updateKnob(el, state[key]);
+        }
+    }
+
+    if (pre.seq) {
+        pre.seq.forEach((sData, i) => {
+            stepData[i].on = sData[0] === 1;
+            stepData[i].noteIdx = sData[1];
+            stepData[i].note = noteMultipliers[sData[1]];
+            stepData[i].oct = sData[2];
+
+            const sEl = document.getElementById('step-'+i);
+            if (sEl) sEl.classList.toggle('on', stepData[i].on);
+
+            const u = document.querySelectorAll('.step-unit')[i];
+            if (u) {
+                u.querySelectorAll('select')[0].selectedIndex = stepData[i].noteIdx;
+                u.querySelectorAll('select')[1].value = stepData[i].oct;
+            }
+        });
+    }
+
+    if(ctx) updateAudio();
+}
+
+function nextPreset() {
+    currentPreIdx++;
+    if (currentPreIdx >= presets[categories[currentCatIdx]].length) {
+        currentPreIdx = 0;
+        currentCatIdx = (currentCatIdx + 1) % categories.length;
+    }
+    updatePresetDisplay();
+}
+
+function prevPreset() {
+    currentPreIdx--;
+    if (currentPreIdx < 0) {
+        currentCatIdx = (currentCatIdx - 1 + categories.length) % categories.length;
+        currentPreIdx = presets[categories[currentCatIdx]].length - 1;
+    }
+    updatePresetDisplay();
+}
+
+function saveToUser() {
+    const name = prompt("Dai un nome al tuo preset:", "My Sound");
+    if (name) {
+        const currentParams = {...state};
+        const currentSeq = stepData.map(d => [d.on ? 1 : 0, d.noteIdx, d.oct]);
+
+        presets.USER[currentPreIdx] = {
+            name: name.toUpperCase(),
+            wave: currentWave,
+            p: currentParams,
+            seq: currentSeq,
+            empty: false
+        };
+
+        localStorage.setItem('psyBeardUserPresets', JSON.stringify(presets.USER));
+
+        currentCatIdx = 5;
+        currentPreIdx = presets.USER.length - 1;
+        updatePresetDisplay();
+
+        const btn = document.querySelector('.save-btn');
+        btn.classList.add('active');
+        btn.innerText = 'SAVED!';
+        setTimeout(() => { btn.classList.remove('active'); btn.innerText = 'SAVE'; }, 1000);
+    }
+}
+
+function randomizeSkin() {
+    const h1 = Math.floor(Math.random()*360), s1 = 60+Math.random()*40, l1 = 60+Math.random()*20;
+    const colorStep = `hsl(${h1},${s1}%,${l1}%)`;
+
+    const h2 = (h1 + 60 + Math.floor(Math.random()*240)) % 360;
+    const colorUI = `hsl(${h2}, 80%, 70%)`;
+
+    document.documentElement.style.setProperty('--step-color', colorStep);
+    document.documentElement.style.setProperty('--ui-accent', colorUI);
+}
+
+function setWave(w) { currentWave = w; document.querySelectorAll('.w-btn').forEach(b => b.classList.toggle('active', b.dataset.w === w)); if(ctx) mainOsc.type = w; }
+
+const grid = document.getElementById('seq');
+for(let i=0; i<16; i++) {
+    const unit = document.createElement('div'); unit.className = 'step-unit';
+    const s = document.createElement('div'); s.className = 'step'; s.id = 'step-'+i;
+    s.onclick = () => { stepData[i].on = !stepData[i].on; s.classList.toggle('on', stepData[i].on); };
+    const nSel = document.createElement('select'); nSel.className = 'note-sel';
+    noteNames.forEach((n, idx) => { let o = new Option(n, noteMultipliers[idx]); nSel.add(o); });
+    nSel.onchange = (e) => { stepData[i].note = parseFloat(e.target.value); stepData[i].noteIdx = e.target.selectedIndex; };
+    const oSel = document.createElement('select'); oSel.className = 'oct-sel';
+    [0.5, 1, 2, 4].forEach(v => { let o = new Option(v+'x', v); if(v===1) o.selected=true; oSel.add(o); });
+    oSel.onchange = (e) => stepData[i].oct = parseFloat(e.target.value);
+    unit.append(s, nSel, oSel); grid.appendChild(unit);
+}
+
+const kWrap = document.getElementById('knob-container');
+knobDefs.forEach(d => {
+    const box = document.createElement('div'); box.className = 'k-box';
+    let waveHtml = (d.id === 'freq') ? `<div class="wave-grid"><button class="w-btn active" data-w="sawtooth" onclick="setWave('sawtooth')">SAW</button><button class="w-btn" data-w="square" onclick="setWave('square')">SQR</button><button class="w-btn" data-w="triangle" onclick="setWave('triangle')">TRI</button><button class="w-btn" data-w="sine" onclick="setWave('sine')">SIN</button></div>` : '';
+
+    if (d.hasWP) {
+        box.innerHTML = `${waveHtml}<span class="k-label">${d.label}</span><div class="knob-row-layout"><div class="k-knob-wrapper" id="w-${d.id}"><div class="k-led-ring" id="r-${d.id}"></div><div class="k-knob" id="k-${d.id}" data-min="${d.min}" data-max="${d.max}" data-val="${state[d.id]}"></div></div><div class="wp-btn" id="wp-toggle" onclick="toggleNoiseType()">W/P</div></div><span class="k-val" id="v-${d.id}">${state[d.id]}</span>`;
+    } else {
+        box.innerHTML = `${waveHtml}<span class="k-label">${d.label}</span><div class="k-knob-wrapper" id="w-${d.id}"><div class="k-led-ring" id="r-${d.id}"></div><div class="k-knob" id="k-${d.id}" data-min="${d.min}" data-max="${d.max}" data-val="${state[d.id]}"></div></div><span class="k-val" id="v-${d.id}">${state[d.id]}</span>`;
+    }
+
+    kWrap.appendChild(box);
+});
+
+function togglePingPong() { isPingPong = !isPingPong; document.getElementById('pp-toggle').classList.toggle('active', isPingPong); if(ctx) updateAudio(); }
+function toggleNoiseType() { isPinkNoise = !isPinkNoise; document.getElementById('wp-toggle').classList.toggle('active', isPinkNoise); if(ctx) createNoise(); }
+
+function initAudio() {
+    ctx = new (window.AudioContext || window.webkitAudioContext)(); recDest = ctx.createMediaStreamDestination(); driveNode = ctx.createWaveShaper(); filter = ctx.createBiquadFilter(); noteGain = ctx.createGain(); masterGain = ctx.createGain(); delayNode = ctx.createDelay(1.0); delayGain = ctx.createGain(); panner = ctx.createStereoPanner();
+    let fb = ctx.createGain(); fb.gain.value = 0.45; delayNode.connect(fb); fb.connect(delayNode);
+    reverbNode = ctx.createConvolver(); reverbGain = ctx.createGain(); createReverb();
+    let fmOsc = ctx.createOscillator(); fmGain = ctx.createGain(); fmOsc.connect(fmGain);
+    mainOsc = ctx.createOscillator(); mainOsc.type = currentWave; noiseGain = ctx.createGain();
+
+    subOsc = ctx.createOscillator();
+    subOsc.type = "sine";
+    subGain = ctx.createGain(); subGain.gain.value = 0;
+    subOsc.connect(subGain); subGain.connect(driveNode);
+    subOsc.start();
+
+    fmGain.connect(mainOsc.frequency); mainOsc.connect(driveNode);
+    driveNode.connect(filter); filter.connect(noteGain); noteGain.connect(masterGain); noteGain.connect(delayNode); noteGain.connect(reverbNode); masterGain.connect(ctx.destination); masterGain.connect(recDest); delayNode.connect(delayGain); delayGain.connect(panner); panner.connect(ctx.destination); panner.connect(recDest); reverbNode.connect(reverbGain); reverbGain.connect(ctx.destination); reverbGain.connect(recDest); fmOsc.start(); mainOsc.start(); createNoise(); scheduler();
+}
+function createNoise() { if(noiseNode) noiseNode.disconnect(); const bufferSize = 2 * ctx.sampleRate, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), data = buffer.getChannelData(0); if (!isPinkNoise) { for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1; } else { let b0, b1, b2, b3, b4, b5, b6; b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0; for (let i = 0; i < bufferSize; i++) { let white = Math.random() * 2 - 1; b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759; b2 = 0.96900 * b2 + white * 0.1538520; b3 = 0.86650 * b3 + white * 0.3104856; b4 = 0.55000 * b4 + white * 0.5329522; b5 = -0.7616 * b5 - white * 0.0168980; data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362; data[i] *= 0.11; b6 = white * 0.115926; } } noiseNode = ctx.createBufferSource(); noiseNode.buffer = buffer; noiseNode.loop = true; noiseNode.connect(noiseGain); noiseGain.connect(driveNode); noiseNode.start(); }
+function createReverb() { let len = ctx.sampleRate * 2, buff = ctx.createBuffer(2, len, ctx.sampleRate); for(let i=0; i<2; i++){ let d = buff.getChannelData(i); for(let j=0; j<len; j++) d[j] = (Math.random()*2-1)*Math.pow(1-j/len, 3); } reverbNode.buffer = buff; }
+
+function scheduler() {
+    if(isStarted) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('now'));
+        const stepEl = document.getElementById('step-'+currentStep); if(stepEl) stepEl.classList.add('now');
+
+        if(currentStep === 0) {
+            if(pendingRec) {
+                chunks = [];
+                recorder = new MediaRecorder(recDest.stream);
+                recorder.ondataavailable = e => chunks.push(e.data);
+                recorder.onstop = () => {
+                    let a = document.createElement('a');
+                    a.href = URL.createObjectURL(new Blob(chunks, {type:'audio/wav'}));
+                    a.download = 'psy_beard_lux.wav'; a.click();
+                };
+                recorder.start();
+                recording = true; pendingRec = false;
+                const btn = document.getElementById('rec-btn');
+                btn.classList.remove('pending'); btn.classList.add('recording'); btn.innerText = 'REC [ON]';
+            } else if(pendingStop) {
+                recorder.stop();
+                recording = false; pendingStop = false;
+                const btn = document.getElementById('rec-btn');
+                btn.classList.remove('recording'); btn.innerText = 'REC WAV';
+            }
+        }
+
+        if(stepData[currentStep].on) {
+            const now = ctx.currentTime, targetFreq = state.freq * stepData[currentStep].note * stepData[currentStep].oct;
+            noteGain.gain.cancelScheduledValues(now);
+            noteGain.gain.setTargetAtTime(0, now, 0.002);
+            if(isPingPong) panner.pan.setValueAtTime(currentStep % 2 === 0 ? -0.7 : 0.7, now); else panner.pan.setValueAtTime(0, now);
+
+            if(synthMode === 'LEAD') {
+                mainOsc.frequency.setTargetAtTime(targetFreq + (state.det / 2), now, 0.005);
+
+                subOsc.frequency.setTargetAtTime(targetFreq / 2, now, 0.005);
+                const subAmt = state.sub / 100;
+                subGain.gain.setTargetAtTime(subAmt * 0.5, now, 0.005);
+
+                noteGain.gain.setTargetAtTime(0.6, now + 0.002, state.atk / 2);
+                noteGain.gain.setTargetAtTime(0, now + state.atk + state.len, 0.05);
+            } else {
+                mainOsc.frequency.setValueAtTime(targetFreq * 2.5, now);
+                mainOsc.frequency.exponentialRampToValueAtTime(targetFreq, now + 0.04);
+
+                subGain.gain.setTargetAtTime(0, now, 0.005);
+
+                noteGain.gain.setTargetAtTime(0.8, now, 0.005);
+                noteGain.gain.setTargetAtTime(0, now + 0.08, 0.02);
+            }
+        }
+        currentStep = (currentStep + 1) % loopSteps;
+    }
+    updateAudio();
+    let bt = (60000/state.bpm)/4; setTimeout(scheduler, (currentStep % 2 !== 0) ? bt * (1 + state.swg/100) : bt * (1 - state.swg/100));
+}
+
+function updateAudio() {
+    if(!ctx) return;
+    masterGain.gain.setTargetAtTime((state.vol/100) * 1.5, ctx.currentTime, 0.02);
+    filter.frequency.setTargetAtTime(state.cut, ctx.currentTime, 0.02);
+    filter.Q.value = state.res;
+    fmGain.gain.value = state.fm;
+    delayGain.gain.value = fxBypass ? 0 : state.dly/180;
+    reverbGain.gain.value = fxBypass ? 0 : state.rev/250;
+    noiseGain.gain.value = state.noise / 250;
+    delayNode.delayTime.value = (60/state.bpm)*0.75;
+    driveNode.curve = (function(k){ let n = 44100, curve = new Float32Array(n), x; for(let i=0; i<n; i++) { x = i*2/n-1; curve[i] = (3+k)*x*20*(Math.PI/180)/(Math.PI+k*Math.abs(x)); } return curve; })(state.drv);
+}
+
+function toggleAudio() { if(!ctx) initAudio(); if(ctx.state==='suspended') ctx.resume(); isStarted=!isStarted; document.getElementById('start').classList.toggle('active'); }
+function switchMode() { synthMode=(synthMode==='LEAD'?'PERC':'LEAD'); document.getElementById('mode').innerText='MODE:'+synthMode; }
+function randSeq() { stepData.forEach((d, i) => { d.on = Math.random() > 0.3; d.noteIdx = Math.floor(Math.random()*12); d.note = noteMultipliers[d.noteIdx]; d.oct = [0.5, 1, 2][Math.floor(Math.random()*3)]; document.getElementById('step-'+i).classList.toggle('on', d.on); const u = document.querySelectorAll('.step-unit')[i]; u.querySelectorAll('select')[0].selectedIndex = d.noteIdx; u.querySelectorAll('select')[1].value = d.oct; }); }
+function panic() { document.querySelectorAll('.k-knob').forEach(k => { const id = k.id.split('-')[1]; if(id!=='vol'&&id!=='bpm'&&id!=='swg') updateKnob(k, Math.random()*(k.dataset.max-k.dataset.min)+ +k.dataset.min); }); }
+
+function toggleRec() {
+    const btn = document.getElementById('rec-btn');
+    if(!isStarted) { alert("Premi PLAY prima di registrare a tempo!"); return; }
+
+    if(!recording && !pendingRec) {
+        pendingRec = true;
+        btn.classList.add('pending');
+        btn.innerText = 'WAIT...';
+    } else if(recording) {
+        pendingStop = true;
+        btn.innerText = 'END...';
+    }
+}
+
+function toggleBypass() { fxBypass = !fxBypass; document.getElementById('bypass-btn').classList.toggle('bypass-on', fxBypass); if(ctx) updateAudio(); }
+
+function updateKnob(el, val) {
+    val = Math.max(el.dataset.min, Math.min(el.dataset.max, val));
+    el.dataset.val = val;
+    let id = el.id.split('-')[1];
+    state[id] = val;
+    let deg = ((val-el.dataset.min)/(el.dataset.max-el.dataset.min)*280);
+
+    const ring = document.getElementById('r-'+id);
+    if(ring) ring.style.setProperty('--v', deg+'deg');
+
+    const valText = document.getElementById('v-'+id);
+    if(valText) valText.innerText = (id=='len' || id=='atk') ? Math.round(val*1000)+'ms' : Math.round(val);
+
+    if(ctx) updateAudio();
+}
+
+document.querySelectorAll('.k-knob-wrapper').forEach(wrapper => {
+    let y = 0, drag = false;
+    const knob = wrapper.querySelector('.k-knob');
+    wrapper.onpointerdown = e => { drag=true; y=e.clientY; wrapper.setPointerCapture(e.pointerId); };
+    wrapper.onpointermove = e => { if(drag) { updateKnob(knob, parseFloat(knob.dataset.val) + (y - e.clientY) * ((knob.dataset.max - knob.dataset.min)/180)); y = e.clientY; } };
+    wrapper.onpointerup = () => drag=false;
+    updateKnob(knob, state[knob.id.split('-')[1]]);
+});
+
+const volWrapper = document.getElementById('w-vol');
+const volKnob = document.getElementById('k-vol');
+let volY = 0, volDrag = false;
+volWrapper.onpointerdown = e => { volDrag=true; volY=e.clientY; volWrapper.setPointerCapture(e.pointerId); };
+volWrapper.onpointermove = e => { if(volDrag) { updateKnob(volKnob, parseFloat(volKnob.dataset.val) + (volY - e.clientY) * ((volKnob.dataset.max - volKnob.dataset.min)/180)); volY = e.clientY; } };
+volWrapper.onpointerup = () => volDrag=false;
+updateKnob(volKnob, state['vol']);
+
+const lenBar = document.getElementById('len-btns'); for(let i=1; i<=16; i++){ const b = document.createElement('div'); b.className = 'len-btn'; b.innerText = i; if(i===16) b.classList.add('active'); b.onclick = () => updateLoopLen(i); lenBar.appendChild(b); }
+
+function updateLoopLen(val) {
+    loopSteps = val;
+    document.querySelectorAll('.len-btn').forEach((b,idx) => b.classList.toggle('active', idx+1 === val));
+
+    document.querySelectorAll('.step-unit').forEach((unit, idx) => {
+        if (idx >= val) {
+            unit.classList.add('disabled');
+        } else {
+            unit.classList.remove('disabled');
+        }
+    });
+}
+
+function openCreditsModal() {
+    const modal = document.getElementById('presetModal');
+    const listContainer = document.getElementById('modal-preset-list');
+
+    document.querySelector('.modal-title').innerText = "INFO & CREDITS";
+
+    listContainer.innerHTML = `
+        <div class="modal-category" style="grid-column: span 2; padding: 15px; background: rgba(0,0,0,0.4);">
+            <div class="cat-title" style="font-size: 10px; margin-bottom: 15px; color: var(--ui-accent);">RELEASE NOTES - Ver. 1.1</div>
+            <p style="font-size: 11px; line-height: 1.6; color: #ccc; margin-bottom: 10px;">• Optimized Psy-Bass synthesis engine.<br>• Independent FM and Noise generator algorithms.<br>• Resonant filter with analog-style Drive.<br>• 16-step sequencer with real-time length management.<br>• Redesigned presets.<br>• Add preset</p>
+
+            <div class="cat-title" style="font-size: 10px; margin-top: 20px; margin-bottom: 15px; color: var(--ui-accent);">CREDITS</div>
+            <p style="font-size: 11px; color: #ccc;">Designed and engineered by <strong>Lux Stiffmeister</strong>.</p>
+            <p style="font-size: 11px; color: #aaa; font-style: italic; margin-top: 10px; line-height: 1.4;">"Born from a crazy idea because I couldn't find what I was looking for."</p>
+
+            <p style="font-size: 11px; color: #ccc; margin-top: 15px;">For information and feedback write to:<br>
+               <a href="mailto:luxstiffmeister@gmail.com" style="color: var(--ui-accent); text-decoration: none;">luxstiffmeister@gmail.com</a>
+            </p>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+}
+
+const oldOpenPresetModal = openPresetModal;
+openPresetModal = function() {
+    document.querySelector('.modal-title').innerText = "PRESET LIST";
+    oldOpenPresetModal();
+};
+
+window.onload = () => {
+    updateLoopLen(16);
+    updatePresetDisplay();
+};
+</script>
+</body>
+</html>
+
