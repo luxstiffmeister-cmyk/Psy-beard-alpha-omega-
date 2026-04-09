@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Psy Beard Alpha Ωmega - Psy Bass Edition</title>
+    <title>Psy Beard Alpha Ωmega</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;700&family=Permanent+Marker&display=swap');
 
@@ -21,67 +21,44 @@
         * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; }
         
         html, body { 
-            margin: 0; 
-            padding: 0; 
-            background: #050505; 
-            color: var(--text-print); 
-            font-family: 'Chivo Mono', monospace; 
-            height: 100%; 
-            width: 100%;
-            overflow: hidden; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
+            margin: 0; padding: 0; background: #050505; color: var(--text-print); 
+            font-family: 'Chivo Mono', monospace; height: 100%; width: 100%;
+            overflow: hidden; display: flex; justify-content: center; align-items: center; 
         }
 
         .rack { 
-            background: var(--wood-dark); 
-            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 4px solid #111; 
-            box-shadow: 0 30px 80px rgba(0,0,0,1); 
-            position: relative; 
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: var(--wood-dark); background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); 
+            padding: 15px; border-radius: 8px; border: 4px solid #111; box-shadow: 0 30px 80px rgba(0,0,0,1); 
+            position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;
         }
 
         .panel { 
-            background: var(--metal-panel); 
-            background-image: linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); 
-            background-size: 3px 100%; 
-            border: 2px solid #333; 
-            padding: 20px; 
-            border-radius: 2px; 
-            width: 98%; 
-            height: 96%;
-            max-width: 1100px; 
-            position: relative; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8); 
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            background: var(--metal-panel); background-image: linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); 
+            background-size: 3px 100%; border: 2px solid #333; padding: 20px; border-radius: 2px; 
+            width: 98%; height: 96%; max-width: 1100px; position: relative; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8); display: flex; flex-direction: column; justify-content: space-between;
         }
 
         .header-box { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .title { font-family: 'Permanent Marker', cursive; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: 1px; text-shadow: 0 0 5px var(--ui-accent), 0 0 10px var(--ui-accent); -webkit-text-stroke: 1px rgba(0,0,0,0.5); text-stroke: 1px rgba(0,0,0,0.5); cursor: pointer; transition: all 0.3s ease; line-height: 1; }
+        .title { font-family: 'Permanent Marker', cursive; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: 1px; text-shadow: 0 0 5px var(--ui-accent), 0 0 10px var(--ui-accent); -webkit-text-stroke: 1px rgba(0,0,0,0.5); cursor: pointer; line-height: 1; }
         .lcd-container { display: flex; align-items: center; gap: 8px; position: absolute; left: 50%; transform: translateX(-50%); }
-        .lcd-display { background: #000; width: 220px; height: 38px; border: 2px solid var(--ui-accent); border-radius: 4px; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; box-shadow: inset 0 0 8px var(--ui-accent), 0 0 5px var(--ui-accent); }
+        .lcd-display { background: #000; width: 220px; height: 38px; border: 2px solid var(--ui-accent); border-radius: 4px; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; box-shadow: inset 0 0 8px var(--ui-accent); }
         .lcd-text-top { font-size: 8px; color: var(--ui-accent); letter-spacing: 2px; text-transform: uppercase; font-weight: bold; opacity: 0.8; }
         .lcd-text-main { font-size: 12px; color: var(--ui-accent); font-weight: bold; letter-spacing: 1px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .lcd-btn { background: #000; border: 1px solid var(--ui-accent); color: var(--ui-accent); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; border-radius: 3px; font-weight: bold; }
+        
         .seq-row { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; margin-bottom: 5px; }
         .step-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .step { width: 100%; height: 40px; background: #2a2a2a; border: 1px solid #444; cursor: pointer; border-radius: 2px; }
+        .step { width: 100%; height: 40px; background: #2a2a2a; border: 1px solid #444; cursor: pointer; border-radius: 2px; transition: all 0.1s; }
         .step.on { background: var(--step-color); box-shadow: 0 0 15px var(--step-color), 0 0 5px #fff; border-color: #fff; }
         .step.now { border: 2px solid #fff; transform: scale(1.05); z-index: 5; }
+        
         .note-sel, .oct-sel { width: 100%; height: 35px; background: #000; color: var(--ui-accent); border: 1px solid #333; font-size: 11px; font-weight: bold; outline: none; text-align: center; cursor: pointer; -webkit-appearance: none; border-radius: 2px; }
+        
         .len-selector { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; margin: 10px 0; padding: 5px; background: #000; border-radius: 4px; border: 1px solid #333; }
         .len-btn { height: 25px; background: #1a1a1a; border: 1px solid #444; color: #666; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .len-btn.active { background: #000; color: var(--ui-accent); border-color: var(--ui-accent); box-shadow: 0 0 10px var(--ui-accent); }
+        
         .controls { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 10px; position: relative; }
         .k-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .k-label { font-size: 8px; color: var(--ui-accent); text-transform: uppercase; font-weight: 700; text-shadow: 0 0 5px var(--ui-accent); }
@@ -89,14 +66,29 @@
         .k-led-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--ui-accent) var(--v, 0deg), #333 0deg); mask: radial-gradient(transparent 58%, black 60%); -webkit-mask: radial-gradient(transparent 58%, black 60%); transform: rotate(-140deg); }
         .k-knob { width: 36px; height: 36px; background: #111; border-radius: 50%; border: 2px solid #333; z-index: 2; box-shadow: 2px 4px 6px #000; }
         .k-val { font-size: 9px; color: #fff; font-weight: 700; margin-top: 2px; }
+
         .actions-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 10px; }
-        .btn { background: #000; color: var(--ui-accent); border: 1px solid var(--ui-accent); padding: 12px 5px; font-size: 10px; font-family: 'Chivo Mono'; cursor: pointer; border-radius: 3px; font-weight: 700; box-shadow: 0 0 5px var(--ui-accent); }
-        .btn.active { background: var(--ui-accent); color: #000; }
+        
+        /* FIX: Classi per Animazione Tasti */
+        .btn { 
+            background: #000; color: var(--ui-accent); border: 1px solid var(--ui-accent); 
+            padding: 12px 5px; font-size: 10px; font-family: 'Chivo Mono'; 
+            cursor: pointer; border-radius: 3px; font-weight: 700; 
+            box-shadow: 0 0 5px rgba(0,243,195,0.3); transition: all 0.2s; 
+        }
+        .btn:active { transform: scale(0.95); background: var(--ui-accent); color: #000; }
+        .btn.active { background: var(--ui-accent); color: #000; box-shadow: 0 0 20px var(--ui-accent); border-color: #fff; }
+        .btn.bypass-on { border-color: #ff3333; color: #ff3333; box-shadow: 0 0 15px #ff3333; }
+        .btn.rec-active { background: #ff0000; color: #fff; border-color: #fff; animation: pulse-red 1s infinite; }
+
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
         .modal-content { background: #111; border: 2px solid var(--ui-accent); width: 90%; height: 80%; max-width: 800px; border-radius: 4px; display: flex; flex-direction: column; overflow: hidden; }
-        .modal-body { padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; flex-grow: 1; }
+        .modal-body { padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; flex-grow: 1; }
         .preset-item { font-size: 13px; color: #aaa; padding: 10px; cursor: pointer; border-bottom: 1px solid #222; }
         .preset-item.active { background: var(--ui-accent); color: #000; font-weight: bold; }
+        
         .signature-container { position: absolute; bottom: 5px; right: 20px; }
         .signature { font-family: 'Permanent Marker', cursive; font-size: 1rem; color: #fff; opacity: 0.7; }
         .wave-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 5px; width: 70px; }
@@ -118,7 +110,7 @@
                     <span class="lcd-text-main" id="lcd-name">Da Funk 303</span>
                 </div>
                 <button class="lcd-btn" onclick="nextPreset()">&gt;</button>
-                <button class="lcd-btn save-btn" style="width: auto; padding: 0 10px; margin-left:5px; color:#ff5555; border-color:#ff3333;" onclick="saveToUser()">SAVE</button>
+                <button class="lcd-btn" style="width: auto; padding: 0 10px; margin-left:5px; color:#ff5555; border-color:#ff3333;" onclick="saveToUser()">SAVE</button>
             </div>
             <div class="right-header-controls">
                 <div class="k-box">
@@ -144,8 +136,8 @@
             <button id="start" class="btn" onclick="toggleAudio()">PLAY/STOP</button>
             <button id="mode" class="btn" onclick="switchMode()">MODE:LEAD</button>
             <button id="bypass-btn" class="btn" onclick="toggleBypass()">FX BYPASS</button>
-            <button class="btn" onclick="randSeq()">RAND SEQ</button>
-            <button class="btn" onclick="panic()">PANIC</button>
+            <button id="rand-btn" class="btn" onclick="randSeq()">RAND SEQ</button>
+            <button id="panic-btn" class="btn" onclick="panic()">PANIC</button>
             <button id="rec-btn" class="btn" onclick="toggleRec()">REC WAV</button>
         </div>
         <div class="signature-container"><div class="signature">by Lux Stiffmeister</div></div>
@@ -153,7 +145,7 @@
 </div>
 
 <div id="presetModal" class="modal" onclick="closeModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-content">
         <div class="header-box" style="padding: 15px; margin: 0;">
             <h2 id="modal-title-text" style="color: var(--ui-accent); font-size: 14px; margin:0;">PRESET LIST</h2>
             <button class="btn" style="padding: 5px 15px;" onclick="document.getElementById('presetModal').style.display='none'">X</button>
@@ -176,45 +168,68 @@ const pr_daFunk = [[1,2,1], [0,0,1], [1,2,1], [0,0,1], [1,5,1], [0,0,1], [1,2,1]
 const pr_acid1 = [[1,0,1], [0,0,1], [1,0,1], [1,3,1], [1,0,2], [0,0,1], [1,0,1], [1,0,1], [1,3,1], [0,0,1], [1,0,1], [1,0,2], [1,0,1], [0,0,1], [1,3,1], [1,0,1]];
 const pr_rolling = [[0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1]];
 const pr_hiAlt = [[1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2]];
-const pr_gallop = [[1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1]];
-const pr_perc = [[1,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1], [1,0,1], [0,0,1], [0,0,1], [0,0,1]];
-const pr_psyLead = [[1,0,2], [0,0,1], [1,3,2], [1,0,2], [0,0,1], [1,7,2], [0,0,1], [1,10,2], [1,0,2], [0,0,1], [1,5,2], [1,0,2], [0,0,1], [1,8,2], [0,0,1], [1,2,2]];
-const pr_upAndDown = [[1,0,1], [1,2,1], [1,3,1], [1,5,1], [1,7,1], [1,5,1], [1,3,1], [1,2,1], [1,0,1], [1,2,1], [1,3,1], [1,5,1], [1,7,1], [1,5,1], [1,3,1], [1,2,1]];
+const pr_rumble = [[1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1]];
 
 const presets = {
     ACID: [
         {name: 'Da Funk 303', wave: 'square', p: {bpm:111, freq:48, noise:0, det:5, atk:0.005, len:0.18, sub:0, cut:550, res:24, drv:85, dly:10, rev:5, fm:0}, seq: pr_daFunk},
         {name: 'Psy Resonance', wave: 'square', p: {bpm:140, freq:55, noise:2, det:5, atk:0.005, len:0.12, sub:5, cut:1400, res:25, drv:30, dly:15, rev:10, fm:100}, seq: pr_acid1},
-        {name: 'Rubber Acid', wave: 'square', p: {bpm:128, freq:50, noise:0, det:2, atk:0.010, len:0.15, sub:0, cut:450, res:20, drv:40, dly:5, rev:2, fm:0}, seq: pr_daFunk},
+        {name: 'Liquid Brain', wave: 'sawtooth', p: {bpm:142, freq:60, noise:0, det:10, atk:0.01, len:0.08, sub:10, cut:2200, res:28, drv:40, dly:20, rev:15, fm:300}, seq: pr_acid1},
         {name: 'Pure TB', wave: 'square', p: {bpm:138, freq:48, noise:0, det:5, atk:0.005, len:0.12, sub:0, cut:1100, res:28, drv:60, dly:10, rev:5, fm:0}, seq: pr_acid1}
+    ],
+    RUMBLE: [
+        {name: 'Deep Abyss', wave: 'sine', p: {bpm:138, freq:35, noise:5, det:0, atk:0.02, len:0.25, sub:60, cut:180, res:8, drv:45, dly:0, rev:30, fm:50}, seq: pr_rumble},
+        {name: 'Techno Rumble', wave: 'sawtooth', p: {bpm:132, freq:40, noise:10, det:5, atk:0.01, len:0.15, sub:40, cut:250, res:12, drv:60, dly:15, rev:45, fm:0}, seq: pr_rumble},
+        {name: 'Dark Forest', wave: 'triangle', p: {bpm:145, freq:42, noise:20, det:15, atk:0.05, len:0.3, sub:30, cut:350, res:10, drv:20, dly:10, rev:60, fm:150}, seq: pr_rumble}
     ],
     BASS: [
         {name: 'Psy Rolling Clean', wave: 'sawtooth', p: {bpm:138, freq:50, noise:0, det:5, atk:0.005, len:0.08, sub:5, cut:600, res:10, drv:20, dly:0, rev:0, fm:20}, seq: pr_rolling},
         {name: 'Sub Destroyer', wave: 'sine', p: {bpm:138, freq:40, noise:0, det:0, atk:0.005, len:0.10, sub:40, cut:250, res:5, drv:50, dly:0, rev:0, fm:10}, seq: pr_rolling},
-        {name: 'Gallop Bass', wave: 'sawtooth', p: {bpm:142, freq:52, noise:0, det:4, atk:0.005, len:0.07, sub:8, cut:800, res:12, drv:15, dly:0, rev:0, fm:0}, seq: pr_gallop},
-        {name: 'Aggro Growl', wave: 'square', p: {bpm:138, freq:48, noise:5, det:10, atk:0.005, len:0.15, sub:15, cut:1200, res:20, drv:60, dly:5, rev:5, fm:200}, seq: pr_rolling}
+        {name: 'Gallop Bass', wave: 'sawtooth', p: {bpm:142, freq:52, noise:0, det:4, atk:0.005, len:0.07, sub:8, cut:800, res:12, drv:15, dly:0, rev:0, fm:0}, seq: [[1,0,1], [0,0,1], [1,0,1], [1,0,1]]}
     ],
     LEAD: [
-        {name: 'Neon Laser', wave: 'sawtooth', p: {bpm:140, freq:110, noise:0, det:30, atk:0.005, len:0.15, sub:0, cut:3500, res:15, drv:30, dly:20, rev:20, fm:100}, seq: pr_psyLead},
-        {name: 'Screaming Sync', wave: 'square', p: {bpm:145, freq:150, noise:2, det:40, atk:0.005, len:0.25, sub:0, cut:5000, res:22, drv:45, dly:25, rev:30, fm:500}, seq: pr_psyLead},
-        {name: 'High Altered', wave: 'sawtooth', p: {bpm:140, freq:220, noise:0, det:15, atk:0.005, len:0.10, sub:0, cut:4000, res:10, drv:10, dly:15, rev:15, fm:50}, seq: pr_hiAlt},
-        {name: 'Ethereal Lead', wave: 'sine', p: {bpm:128, freq:330, noise:10, det:20, atk:0.500, len:1.20, sub:0, cut:1800, res:5, drv:5, dly:40, rev:60, fm:10}, seq: pr_upAndDown}
-    ],
-    PERC: [
-        {name: 'Psy Kick 1', wave: 'sine', p: {bpm:138, freq:50, noise:5, det:0, atk:0.005, len:0.08, sub:0, cut:400, res:5, drv:60, dly:0, rev:0, fm:50}, seq: pr_perc},
-        {name: 'Metal Click', wave: 'square', p: {bpm:138, freq:800, noise:20, det:0, atk:0.001, len:0.02, sub:0, cut:7000, res:2, drv:80, dly:0, rev:5, fm:0}, seq: pr_perc},
-        {name: 'Tribal Tom', wave: 'sine', p: {bpm:138, freq:90, noise:2, det:5, atk:0.010, len:0.15, sub:5, cut:300, res:8, drv:10, dly:10, rev:15, fm:10}, seq: pr_perc},
-        {name: 'Industrial Zap', wave: 'sawtooth', p: {bpm:140, freq:400, noise:30, det:100, atk:0.005, len:0.05, sub:0, cut:2500, res:25, drv:90, dly:15, rev:10, fm:1000}, seq: pr_perc}
+        {name: 'Neuro Twister', wave: 'sawtooth', p: {bpm:140, freq:110, noise:30, det:80, atk:0.005, len:0.2, sub:0, cut:2500, res:25, drv:80, dly:20, rev:20, fm:1200}, seq: pr_acid1},
+        {name: 'Screaming Sync', wave: 'square', p: {bpm:145, freq:150, noise:2, det:40, atk:0.005, len:0.25, sub:0, cut:5000, res:22, drv:45, dly:25, rev:30, fm:500}, seq: pr_daFunk},
+        {name: 'Alien Pulse', wave: 'triangle', p: {bpm:140, freq:220, noise:50, det:20, atk:0.01, len:0.1, sub:0, cut:3000, res:15, drv:10, dly:35, rev:40, fm:1800}, seq: pr_hiAlt}
     ],
     FX: [
-        {name: 'Alien Scanner', wave: 'sawtooth', p: {bpm:138, freq:100, noise:20, det:50, atk:0.010, len:0.30, sub:0, cut:2500, res:20, drv:30, dly:35, rev:40, fm:1500}, seq: pr_psyLead},
-        {name: 'Stellar Wind', wave: 'sine', p: {bpm:120, freq:1000, noise:50, det:0, atk:1.0, len:1.5, sub:0, cut:1500, res:10, drv:0, dly:50, rev:80, fm:500}, seq: pr_upAndDown},
-        {name: 'Toxic Noise', wave: 'square', p: {bpm:140, freq:40, noise:100, det:80, atk:0.005, len:0.40, sub:0, cut:6000, res:30, drv:100, dly:20, rev:20, fm:2000}, seq: pr_acid1},
-        {name: 'Glitch Out', wave: 'triangle', p: {bpm:160, freq:1500, noise:15, det:10, atk:0.001, len:0.03, sub:0, cut:8000, res:20, drv:50, dly:10, rev:10, fm:100}, seq: pr_daFunk}
+        {name: 'Cosmic Wind', wave: 'sine', p: {bpm:120, freq:800, noise:100, det:0, atk:0.8, len:1.5, sub:0, cut:2000, res:5, drv:0, dly:60, rev:90, fm:500}, seq: pr_rumble},
+        {name: 'Glitch Monster', wave: 'square', p: {bpm:160, freq:40, noise:60, det:100, atk:0.001, len:0.05, sub:0, cut:7000, res:30, drv:95, dly:10, rev:10, fm:2000}, seq: pr_daFunk}
     ],
     USER: Array(10).fill().map((_, i) => ({name: `Empty Slot ${i+1}`, wave: 'sawtooth', p: {...state}, seq: Array(16).fill([0, 0, 1]), empty: true}))
 };
 
+const categories = Object.keys(presets);
+let currentCatIdx = 0, currentPreIdx = 0;
+
+function updatePresetDisplay() {
+    const cat = categories[currentCatIdx], pre = presets[cat][currentPreIdx];
+    document.getElementById('lcd-cat').innerText = cat;
+    document.getElementById('lcd-name').innerText = pre.name;
+    setWave(pre.wave);
+    for (let key in pre.p) {
+        state[key] = pre.p[key];
+        const el = document.getElementById(`k-${key}`);
+        if (el) updateKnob(el, state[key]);
+    }
+    if (pre.seq) {
+        pre.seq.forEach((sData, i) => {
+            if(i < 16) {
+                stepData[i].on = sData[0] === 1;
+                stepData[i].noteIdx = sData[1];
+                stepData[i].note = noteMultipliers[sData[1]];
+                stepData[i].oct = sData[2];
+                document.getElementById('step-'+i).classList.toggle('on', stepData[i].on);
+                const u = document.querySelectorAll('.step-unit')[i];
+                u.querySelectorAll('select')[0].selectedIndex = stepData[i].noteIdx;
+                u.querySelectorAll('select')[1].value = stepData[i].oct;
+            }
+        });
+    }
+    if(ctx) updateAudio();
+}
+
+// Re-init knob system
 const knobDefs = [
     {id:'bpm', min:80, max:200, label:'BPM'},
     {id:'swg', min:0, max:100, label:'SWING'},
@@ -232,95 +247,6 @@ const knobDefs = [
     {id:'rev', min:0, max:100, label:'REVERB'}
 ];
 
-const categories = ['ACID', 'BASS', 'LEAD', 'PERC', 'FX', 'USER'];
-let currentCatIdx = 0, currentPreIdx = 0;
-
-const savedUserPresets = localStorage.getItem('psyBeardUserPresets');
-if (savedUserPresets) presets.USER = JSON.parse(savedUserPresets);
-
-function openPresetModal() {
-    const modal = document.getElementById('presetModal');
-    const listContainer = document.getElementById('modal-preset-list');
-    document.getElementById('modal-title-text').innerText = "PRESET LIST";
-    listContainer.innerHTML = '';
-    categories.forEach((cat, catIdx) => {
-        const catBox = document.createElement('div');
-        catBox.className = 'modal-category';
-        catBox.style.border = '1px solid #333'; catBox.style.padding='10px';
-        const title = document.createElement('div');
-        title.className = 'cat-title'; title.style.color='var(--ui-accent)'; title.innerText = cat;
-        catBox.appendChild(title);
-        presets[cat].forEach((pre, preIdx) => {
-            const item = document.createElement('div');
-            item.className = 'preset-item';
-            if(catIdx === currentCatIdx && preIdx === currentPreIdx) item.classList.add('active');
-            item.innerText = pre.name;
-            item.onclick = () => { currentCatIdx = catIdx; currentPreIdx = preIdx; updatePresetDisplay(); modal.style.display = 'none'; };
-            catBox.appendChild(item);
-        });
-        listContainer.appendChild(catBox);
-    });
-    modal.style.display = 'flex';
-}
-
-function updatePresetDisplay() {
-    const cat = categories[currentCatIdx], pre = presets[cat][currentPreIdx];
-    document.getElementById('lcd-cat').innerText = cat;
-    document.getElementById('lcd-name').innerText = pre.name;
-    setWave(pre.wave);
-    for (let key in pre.p) {
-        state[key] = pre.p[key];
-        const el = document.getElementById(`k-${key}`);
-        if (el) updateKnob(el, state[key]);
-    }
-    if (pre.seq) {
-        pre.seq.forEach((sData, i) => {
-            stepData[i].on = sData[0] === 1;
-            stepData[i].noteIdx = sData[1];
-            stepData[i].note = noteMultipliers[sData[1]];
-            stepData[i].oct = sData[2];
-            const sEl = document.getElementById('step-'+i); if (sEl) sEl.classList.toggle('on', stepData[i].on);
-            const u = document.querySelectorAll('.step-unit')[i];
-            if (u) { u.querySelectorAll('select')[0].selectedIndex = stepData[i].noteIdx; u.querySelectorAll('select')[1].value = stepData[i].oct; }
-        });
-    }
-    if(ctx) updateAudio();
-}
-
-function nextPreset() { currentPreIdx++; if (currentPreIdx >= presets[categories[currentCatIdx]].length) { currentPreIdx = 0; currentCatIdx = (currentCatIdx + 1) % categories.length; } updatePresetDisplay(); }
-function prevPreset() { currentPreIdx--; if (currentPreIdx < 0) { currentCatIdx = (currentCatIdx - 1 + categories.length) % categories.length; currentPreIdx = presets[categories[currentCatIdx]].length - 1; } updatePresetDisplay(); }
-
-function saveToUser() {
-    const name = prompt("Dai un nome al tuo preset:", "My Sound");
-    if (name) {
-        presets.USER[currentPreIdx] = { name: name.toUpperCase(), wave: currentWave, p: {...state}, seq: stepData.map(d => [d.on ? 1 : 0, d.noteIdx, d.oct]), empty: false };
-        localStorage.setItem('psyBeardUserPresets', JSON.stringify(presets.USER));
-        currentCatIdx = 5; updatePresetDisplay();
-    }
-}
-
-function randomizeSkin() {
-    const h1 = Math.floor(Math.random()*360);
-    document.documentElement.style.setProperty('--step-color', `hsl(${h1}, 80%, 60%)`);
-    document.documentElement.style.setProperty('--ui-accent', `hsl(${(h1+180)%360}, 80%, 70%)`);
-}
-
-function setWave(w) { currentWave = w; document.querySelectorAll('.w-btn').forEach(b => b.classList.toggle('active', b.dataset.w === w)); if(ctx) mainOsc.type = w; }
-
-const grid = document.getElementById('seq');
-for(let i=0; i<16; i++) {
-    const unit = document.createElement('div'); unit.className = 'step-unit';
-    const s = document.createElement('div'); s.className = 'step'; s.id = 'step-'+i;
-    s.onclick = () => { stepData[i].on = !stepData[i].on; s.classList.toggle('on', stepData[i].on); };
-    const nSel = document.createElement('select'); nSel.className = 'note-sel';
-    noteNames.forEach((n, idx) => { let o = new Option(n, noteMultipliers[idx]); nSel.add(o); });
-    nSel.onchange = (e) => { stepData[i].note = parseFloat(e.target.value); stepData[i].noteIdx = e.target.selectedIndex; };
-    const oSel = document.createElement('select'); oSel.className = 'oct-sel';
-    [0.5, 1, 2, 4].forEach(v => { let o = new Option(v+'x', v); if(v===1) o.selected=true; oSel.add(o); });
-    oSel.onchange = (e) => stepData[i].oct = parseFloat(e.target.value);
-    unit.append(s, nSel, oSel); grid.appendChild(unit);
-}
-
 const kWrap = document.getElementById('knob-container');
 knobDefs.forEach(d => {
     const box = document.createElement('div'); box.className = 'k-box';
@@ -329,6 +255,7 @@ knobDefs.forEach(d => {
     kWrap.appendChild(box);
 });
 
+// Audio Engine & Scheduler
 function initAudio() {
     ctx = new (window.AudioContext || window.webkitAudioContext)(); recDest = ctx.createMediaStreamDestination(); driveNode = ctx.createWaveShaper(); filter = ctx.createBiquadFilter(); noteGain = ctx.createGain(); masterGain = ctx.createGain(); delayNode = ctx.createDelay(1.0); delayGain = ctx.createGain(); panner = ctx.createStereoPanner();
     let fb = ctx.createGain(); fb.gain.value = 0.45; delayNode.connect(fb); fb.connect(delayNode);
@@ -339,6 +266,7 @@ function initAudio() {
     fmGain.connect(mainOsc.frequency); mainOsc.connect(driveNode);
     driveNode.connect(filter); filter.connect(noteGain); noteGain.connect(masterGain); noteGain.connect(delayNode); noteGain.connect(reverbNode); masterGain.connect(ctx.destination); masterGain.connect(recDest); delayNode.connect(delayGain); delayGain.connect(panner); panner.connect(ctx.destination); panner.connect(recDest); reverbNode.connect(reverbGain); reverbGain.connect(ctx.destination); reverbGain.connect(recDest); fmOsc.start(); mainOsc.start(); createNoise(); scheduler();
 }
+
 function createNoise() { if(noiseNode) noiseNode.disconnect(); const bufferSize = 2 * ctx.sampleRate, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), data = buffer.getChannelData(0); if (!isPinkNoise) { for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1; } else { let b0, b1, b2, b3, b4, b5, b6; b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0; for (let i = 0; i < bufferSize; i++) { let white = Math.random() * 2 - 1; b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759; b2 = 0.96900 * b2 + white * 0.1538520; b3 = 0.86650 * b3 + white * 0.3104856; b4 = 0.55000 * b4 + white * 0.5329522; b5 = -0.7616 * b5 - white * 0.0168980; data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362; data[i] *= 0.11; b6 = white * 0.115926; } } noiseNode = ctx.createBufferSource(); noiseNode.buffer = buffer; noiseNode.loop = true; noiseNode.connect(noiseGain); noiseGain.connect(driveNode); noiseNode.start(); }
 function createReverb() { let len = ctx.sampleRate * 2, buff = ctx.createBuffer(2, len, ctx.sampleRate); for(let i=0; i<2; i++){ let d = buff.getChannelData(i); for(let j=0; j<len; j++) d[j] = (Math.random()*2-1)*Math.pow(1-j/len, 3); } reverbNode.buffer = buff; }
 
@@ -347,8 +275,8 @@ function scheduler() {
         document.querySelectorAll('.step').forEach(s => s.classList.remove('now'));
         const stepEl = document.getElementById('step-'+currentStep); if(stepEl) stepEl.classList.add('now');
         if(currentStep === 0) {
-            if(pendingRec) { chunks = []; recorder = new MediaRecorder(recDest.stream); recorder.ondataavailable = e => chunks.push(e.data); recorder.onstop = () => { let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, {type:'audio/wav'})); a.download = 'psy_beard_lux.wav'; a.click(); }; recorder.start(); recording = true; pendingRec = false; document.getElementById('rec-btn').innerText = 'REC [ON]'; }
-            else if(pendingStop) { recorder.stop(); recording = false; pendingStop = false; document.getElementById('rec-btn').innerText = 'REC WAV'; }
+            if(pendingRec) { chunks = []; recorder = new MediaRecorder(recDest.stream); recorder.ondataavailable = e => chunks.push(e.data); recorder.onstop = () => { let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, {type:'audio/wav'})); a.download = 'psy_beard_lux.wav'; a.click(); }; recorder.start(); recording = true; pendingRec = false; document.getElementById('rec-btn').classList.add('rec-active'); }
+            else if(pendingStop) { recorder.stop(); recording = false; pendingStop = false; document.getElementById('rec-btn').classList.remove('rec-active'); }
         }
         if(stepData[currentStep].on) {
             const now = ctx.currentTime, targetFreq = state.freq * stepData[currentStep].note * stepData[currentStep].oct;
@@ -373,14 +301,27 @@ function updateAudio() {
     driveNode.curve = (function(k){ let n = 44100, curve = new Float32Array(n), x; for(let i=0; i<n; i++) { x = i*2/n-1; curve[i] = (3+k)*x*20*(Math.PI/180)/(Math.PI+k*Math.abs(x)); } return curve; })(state.drv);
 }
 
-function toggleAudio() { if(!ctx) initAudio(); if(ctx.state==='suspended') ctx.resume(); isStarted=!isStarted; document.getElementById('start').classList.toggle('active'); }
-function switchMode() { synthMode=(synthMode==='LEAD'?'PERC':'LEAD'); document.getElementById('mode').innerText='MODE:'+synthMode; }
-function randSeq() { stepData.forEach((d, i) => { d.on = Math.random() > 0.3; d.noteIdx = Math.floor(Math.random()*12); d.note = noteMultipliers[d.noteIdx]; d.oct = [0.5, 1, 2][Math.floor(Math.random()*3)]; document.getElementById('step-'+i).classList.toggle('on', d.on); const u = document.querySelectorAll('.step-unit')[i]; u.querySelectorAll('select')[0].selectedIndex = d.noteIdx; u.querySelectorAll('select')[1].value = d.oct; }); }
-function panic() { document.querySelectorAll('.k-knob').forEach(k => { const id = k.id.split('-')[1]; if(id!=='vol'&&id!=='bpm'&&id!=='swg') updateKnob(k, Math.random()*(k.dataset.max-k.dataset.min)+ +k.dataset.min); }); }
-function toggleRec() { if(!isStarted) return; if(!recording && !pendingRec) pendingRec = true; else if(recording) pendingStop = true; }
-function toggleBypass() { fxBypass = !fxBypass; document.getElementById('bypass-btn').classList.toggle('bypass-on', fxBypass); if(ctx) updateAudio(); }
-function togglePingPong() { isPingPong = !isPingPong; document.getElementById('pp-toggle').classList.toggle('active', isPingPong); if(ctx) updateAudio(); }
-function toggleNoiseType() { isPinkNoise = !isPinkNoise; document.getElementById('wp-toggle').classList.toggle('active', isPinkNoise); if(ctx) createNoise(); }
+// UI Setup & Actions
+const grid = document.getElementById('seq');
+for(let i=0; i<16; i++) {
+    const unit = document.createElement('div'); unit.className = 'step-unit';
+    const s = document.createElement('div'); s.className = 'step'; s.id = 'step-'+i;
+    s.onclick = () => { stepData[i].on = !stepData[i].on; s.classList.toggle('on', stepData[i].on); };
+    const nSel = document.createElement('select'); nSel.className = 'note-sel';
+    noteNames.forEach((n, idx) => { let o = new Option(n, noteMultipliers[idx]); nSel.add(o); });
+    nSel.onchange = (e) => { stepData[i].note = parseFloat(e.target.value); stepData[i].noteIdx = e.target.selectedIndex; };
+    const oSel = document.createElement('select'); oSel.className = 'oct-sel';
+    [0.5, 1, 2, 4].forEach(v => { let o = new Option(v+'x', v); if(v===1) o.selected=true; oSel.add(o); });
+    oSel.onchange = (e) => stepData[i].oct = parseFloat(e.target.value);
+    unit.append(s, nSel, oSel); grid.appendChild(unit);
+}
+
+document.querySelectorAll('.k-knob-wrapper').forEach(wrapper => {
+    let y = 0, drag = false; const knob = wrapper.querySelector('.k-knob');
+    wrapper.onpointerdown = e => { drag=true; y=e.clientY; wrapper.setPointerCapture(e.pointerId); };
+    wrapper.onpointermove = e => { if(drag) { updateKnob(knob, parseFloat(knob.dataset.val) + (y - e.clientY) * ((knob.dataset.max - knob.dataset.min)/180)); y = e.clientY; } };
+    wrapper.onpointerup = () => drag=false;
+});
 
 function updateKnob(el, val) {
     val = Math.max(el.dataset.min, Math.min(el.dataset.max, val)); el.dataset.val = val; let id = el.id.split('-')[1]; state[id] = val;
@@ -390,27 +331,58 @@ function updateKnob(el, val) {
     if(ctx) updateAudio();
 }
 
-document.querySelectorAll('.k-knob-wrapper').forEach(wrapper => {
-    let y = 0, drag = false; const knob = wrapper.querySelector('.k-knob');
-    wrapper.onpointerdown = e => { drag=true; y=e.clientY; wrapper.setPointerCapture(e.pointerId); };
-    wrapper.onpointermove = e => { if(drag) { updateKnob(knob, parseFloat(knob.dataset.val) + (y - e.clientY) * ((knob.dataset.max - knob.dataset.min)/180)); y = e.clientY; } };
-    wrapper.onpointerup = () => drag=false;
-    updateKnob(knob, state[knob.id.split('-')[1]]);
-});
+function nextPreset() { currentPreIdx++; if (currentPreIdx >= presets[categories[currentCatIdx]].length) { currentPreIdx = 0; currentCatIdx = (currentCatIdx + 1) % categories.length; } updatePresetDisplay(); }
+function prevPreset() { currentPreIdx--; if (currentPreIdx < 0) { currentCatIdx = (currentCatIdx - 1 + categories.length) % categories.length; currentPreIdx = presets[categories[currentCatIdx]].length - 1; } updatePresetDisplay(); }
 
-const lenBar = document.getElementById('len-btns'); for(let i=1; i<=16; i++){ const b = document.createElement('div'); b.className = 'len-btn'; b.innerText = i; if(i===16) b.classList.add('active'); b.onclick = () => updateLoopLen(i); lenBar.appendChild(b); }
-function updateLoopLen(val) { loopSteps = val; document.querySelectorAll('.len-btn').forEach((b,idx) => b.classList.toggle('active', idx+1 === val)); document.querySelectorAll('.step-unit').forEach((unit, idx) => unit.classList.toggle('disabled', idx >= val)); }
+function toggleAudio() { if(!ctx) initAudio(); if(ctx.state==='suspended') ctx.resume(); isStarted=!isStarted; document.getElementById('start').classList.toggle('active'); }
+function switchMode() { synthMode=(synthMode==='LEAD'?'PERC':'LEAD'); document.getElementById('mode').innerText='MODE:'+synthMode; document.getElementById('mode').classList.toggle('active'); }
+function randSeq() { 
+    document.getElementById('rand-btn').classList.add('active');
+    setTimeout(() => document.getElementById('rand-btn').classList.remove('active'), 200);
+    stepData.forEach((d, i) => { d.on = Math.random() > 0.3; d.noteIdx = Math.floor(Math.random()*12); d.note = noteMultipliers[d.noteIdx]; d.oct = [0.5, 1, 2][Math.floor(Math.random()*3)]; document.getElementById('step-'+i).classList.toggle('on', d.on); const u = document.querySelectorAll('.step-unit')[i]; u.querySelectorAll('select')[0].selectedIndex = d.noteIdx; u.querySelectorAll('select')[1].value = d.oct; }); 
+}
+function panic() { 
+    document.getElementById('panic-btn').classList.add('active');
+    setTimeout(() => document.getElementById('panic-btn').classList.remove('active'), 200);
+    document.querySelectorAll('.k-knob').forEach(k => { const id = k.id.split('-')[1]; if(id!=='vol'&&id!=='bpm'&&id!=='swg') updateKnob(k, Math.random()*(k.dataset.max-k.dataset.min)+ +k.dataset.min); }); 
+}
+function toggleRec() { if(!isStarted) return; if(!recording && !pendingRec) pendingRec = true; else if(recording) pendingStop = true; }
+function toggleBypass() { fxBypass = !fxBypass; document.getElementById('bypass-btn').classList.toggle('bypass-on', fxBypass); if(ctx) updateAudio(); }
+function togglePingPong() { isPingPong = !isPingPong; document.getElementById('pp-toggle').classList.toggle('active', isPingPong); if(ctx) updateAudio(); }
+function toggleNoiseType() { isPinkNoise = !isPinkNoise; document.getElementById('wp-toggle').classList.toggle('active', isPinkNoise); if(ctx) createNoise(); }
+function setWave(w) { currentWave = w; document.querySelectorAll('.w-btn').forEach(b => b.classList.toggle('active', b.dataset.w === w)); if(ctx) mainOsc.type = w; }
+function randomizeSkin() { const h1 = Math.floor(Math.random()*360); document.documentElement.style.setProperty('--step-color', `hsl(${h1}, 80%, 60%)`); document.documentElement.style.setProperty('--ui-accent', `hsl(${(h1+180)%360}, 80%, 70%)`); }
 
-function closeModal(e) { if(e.target.id === 'presetModal') e.target.style.display = 'none'; }
-function openCreditsModal() {
+// Modal logic
+function openPresetModal() {
     const modal = document.getElementById('presetModal');
     const listContainer = document.getElementById('modal-preset-list');
-    document.getElementById('modal-title-text').innerText = "INFO & CREDITS";
-    listContainer.innerHTML = `<div class="modal-category" style="grid-column: span 2; padding: 15px; background: rgba(0,0,0,0.4);"><div class="cat-title">RELEASE NOTES - Ver. 1.2 IPAD FIX</div><p style="font-size:11px; line-height:1.6;">• Full Screen Optimized for iPad.<br>• Scrollable Preset Menu.<br>• Larger touch targets for notes.<br>• Fixed background scaling.</p><p style="margin-top:20px;">Designed and engineered by <strong>Lux Stiffmeister</strong>.</p></div>`;
+    listContainer.innerHTML = '';
+    categories.forEach((cat, catIdx) => {
+        const catBox = document.createElement('div'); catBox.style.border = '1px solid #333'; catBox.style.padding='10px';
+        const title = document.createElement('div'); title.style.color='var(--ui-accent)'; title.style.fontWeight='bold'; title.innerText = cat;
+        catBox.appendChild(title);
+        presets[cat].forEach((pre, preIdx) => {
+            const item = document.createElement('div'); item.className = 'preset-item';
+            if(catIdx === currentCatIdx && preIdx === currentPreIdx) item.classList.add('active');
+            item.innerText = pre.name;
+            item.onclick = () => { currentCatIdx = catIdx; currentPreIdx = preIdx; updatePresetDisplay(); modal.style.display = 'none'; };
+            catBox.appendChild(item);
+        });
+        listContainer.appendChild(catBox);
+    });
     modal.style.display = 'flex';
 }
+function closeModal(e) { if(e.target.className === 'modal') e.target.style.display = 'none'; }
 
-window.onload = () => { updateLoopLen(16); updatePresetDisplay(); };
+const lenBar = document.getElementById('len-btns'); 
+for(let i=1; i<=16; i++){ 
+    const b = document.createElement('div'); b.className = 'len-btn'; b.innerText = i; if(i===16) b.classList.add('active'); 
+    b.onclick = () => updateLoopLen(i); lenBar.appendChild(b); 
+}
+function updateLoopLen(val) { loopSteps = val; document.querySelectorAll('.len-btn').forEach((b,idx) => b.classList.toggle('active', idx+1 === val)); }
+
+window.onload = () => { updatePresetDisplay(); };
 </script>
 </body>
 </html>
