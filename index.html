@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -39,16 +39,20 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8); display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        .header-box { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .title { font-family: 'Permanent Marker', cursive; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: 1px; text-shadow: 0 0 5px var(--ui-accent), 0 0 10px var(--ui-accent); -webkit-text-stroke: 1px rgba(0,0,0,0.5); cursor: pointer; line-height: 1; }
-        .lcd-container { display: flex; align-items: center; gap: 8px; position: absolute; left: 50%; transform: translateX(-50%); }
-        .lcd-display { background: #000; width: 220px; height: 38px; border: 2px solid var(--ui-accent); border-radius: 4px; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; box-shadow: inset 0 0 8px var(--ui-accent); }
-        .lcd-text-top { font-size: 8px; color: var(--ui-accent); letter-spacing: 2px; text-transform: uppercase; font-weight: bold; opacity: 0.8; }
-        .lcd-text-main { font-size: 12px; color: var(--ui-accent); font-weight: bold; letter-spacing: 1px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .lcd-btn { background: #000; border: 1px solid var(--ui-accent); color: var(--ui-accent); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; border-radius: 3px; font-weight: bold; }
+        .header-box { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; height: 65px; }
+        .title { font-family: 'Permanent Marker', cursive; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: 1px; text-shadow: 0 0 5px var(--ui-accent), 0 0 10px var(--ui-accent); -webkit-text-stroke: 1px rgba(0,0,0,0.5); cursor: pointer; line-height: 1; z-index: 10; }
+        
+        /* DISPLAY VERTICAL ENHANCEMENT */
+        .lcd-container { display: flex; align-items: center; gap: 8px; position: absolute; left: 50%; transform: translateX(-50%); height: 100%; }
+        .lcd-display { background: #000; width: 240px; height: 52px; border: 2px solid var(--ui-accent); border-radius: 4px; display: flex; flex-direction: column; justify-content: center; padding: 0 12px; box-shadow: inset 0 0 12px rgba(0,243,195,0.4); border-bottom-width: 3px; }
+        .lcd-text-top { font-size: 9px; color: var(--ui-accent); letter-spacing: 3px; text-transform: uppercase; font-weight: bold; opacity: 0.7; margin-bottom: 2px; }
+        .lcd-text-main { font-size: 15px; color: var(--ui-accent); font-weight: bold; letter-spacing: 1.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-shadow: 0 0 8px var(--ui-accent); }
+        .lcd-btn { background: #000; border: 1px solid var(--ui-accent); color: var(--ui-accent); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border-radius: 3px; font-weight: bold; }
         
         .seq-row { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; margin-bottom: 5px; }
-        .step-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .step-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity 0.3s; }
+        .step-unit.disabled { opacity: 0.15; pointer-events: none; }
+        
         .step { width: 100%; height: 40px; background: #2a2a2a; border: 1px solid #444; cursor: pointer; border-radius: 2px; transition: all 0.1s; }
         .step.on { background: var(--step-color); box-shadow: 0 0 15px var(--step-color), 0 0 5px #fff; border-color: #fff; }
         .step.now { border: 2px solid #fff; transform: scale(1.05); z-index: 5; }
@@ -68,14 +72,7 @@
         .k-val { font-size: 9px; color: #fff; font-weight: 700; margin-top: 2px; }
 
         .actions-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 10px; }
-        
-        /* FIX: Classi per Animazione Tasti */
-        .btn { 
-            background: #000; color: var(--ui-accent); border: 1px solid var(--ui-accent); 
-            padding: 12px 5px; font-size: 10px; font-family: 'Chivo Mono'; 
-            cursor: pointer; border-radius: 3px; font-weight: 700; 
-            box-shadow: 0 0 5px rgba(0,243,195,0.3); transition: all 0.2s; 
-        }
+        .btn { background: #000; color: var(--ui-accent); border: 1px solid var(--ui-accent); padding: 12px 5px; font-size: 10px; font-family: 'Chivo Mono'; cursor: pointer; border-radius: 3px; font-weight: 700; box-shadow: 0 0 5px rgba(0,243,195,0.3); transition: all 0.2s; }
         .btn:active { transform: scale(0.95); background: var(--ui-accent); color: #000; }
         .btn.active { background: var(--ui-accent); color: #000; box-shadow: 0 0 20px var(--ui-accent); border-color: #fff; }
         .btn.bypass-on { border-color: #ff3333; color: #ff3333; box-shadow: 0 0 15px #ff3333; }
@@ -102,7 +99,7 @@
 <div class="rack">
     <div class="panel">
         <div class="header-box">
-            <h1 class="title" onclick="openCreditsModal()">Psy Beard<br>Alpha &Omega;mega</h1>
+            <h1 class="title" id="main-title" onclick="openCreditsModal()">Psy Beard<br>Alpha &Omega;mega</h1>
             <div class="lcd-container">
                 <button class="lcd-btn" onclick="prevPreset()">&lt;</button>
                 <div class="lcd-display" onclick="openPresetModal()" style="cursor: pointer;">
@@ -110,7 +107,7 @@
                     <span class="lcd-text-main" id="lcd-name">Da Funk 303</span>
                 </div>
                 <button class="lcd-btn" onclick="nextPreset()">&gt;</button>
-                <button class="lcd-btn" style="width: auto; padding: 0 10px; margin-left:5px; color:#ff5555; border-color:#ff3333;" onclick="saveToUser()">SAVE</button>
+                <button class="lcd-btn" style="width: auto; padding: 0 10px; margin-left:5px; color:#ff5555; border-color:#ff3333; height: 32px;" onclick="saveToUser()">SAVE</button>
             </div>
             <div class="right-header-controls">
                 <div class="k-box">
@@ -164,10 +161,10 @@ let stepData = Array(16).fill().map(() => ({ on: false, note: 1, oct: 1, noteIdx
 const noteMultipliers = [1, 1.059, 1.122, 1.189, 1.26, 1.335, 1.414, 1.498, 1.587, 1.682, 1.782, 1.888];
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
+// Sequences
 const pr_daFunk = [[1,2,1], [0,0,1], [1,2,1], [0,0,1], [1,5,1], [0,0,1], [1,2,1], [0,0,1], [1,0,1], [0,0,1], [1,0,1], [1,2,1], [1,0,1], [0,0,1], [1,2,1], [0,0,1]];
 const pr_acid1 = [[1,0,1], [0,0,1], [1,0,1], [1,3,1], [1,0,2], [0,0,1], [1,0,1], [1,0,1], [1,3,1], [0,0,1], [1,0,1], [1,0,2], [1,0,1], [0,0,1], [1,3,1], [1,0,1]];
 const pr_rolling = [[0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1], [0,0,1], [1,0,1], [1,0,1], [1,0,1]];
-const pr_hiAlt = [[1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2], [1,0,1], [1,0,2]];
 const pr_rumble = [[1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1], [1,0,1]];
 
 const presets = {
@@ -183,14 +180,14 @@ const presets = {
         {name: 'Dark Forest', wave: 'triangle', p: {bpm:145, freq:42, noise:20, det:15, atk:0.05, len:0.3, sub:30, cut:350, res:10, drv:20, dly:10, rev:60, fm:150}, seq: pr_rumble}
     ],
     BASS: [
-        {name: 'Psy Rolling Clean', wave: 'sawtooth', p: {bpm:138, freq:50, noise:0, det:5, atk:0.005, len:0.08, sub:5, cut:600, res:10, drv:20, dly:0, rev:0, fm:20}, seq: pr_rolling},
+        {name: 'Psy Rolling', wave: 'sawtooth', p: {bpm:138, freq:50, noise:0, det:5, atk:0.005, len:0.08, sub:5, cut:600, res:10, drv:20, dly:0, rev:0, fm:20}, seq: pr_rolling},
         {name: 'Sub Destroyer', wave: 'sine', p: {bpm:138, freq:40, noise:0, det:0, atk:0.005, len:0.10, sub:40, cut:250, res:5, drv:50, dly:0, rev:0, fm:10}, seq: pr_rolling},
         {name: 'Gallop Bass', wave: 'sawtooth', p: {bpm:142, freq:52, noise:0, det:4, atk:0.005, len:0.07, sub:8, cut:800, res:12, drv:15, dly:0, rev:0, fm:0}, seq: [[1,0,1], [0,0,1], [1,0,1], [1,0,1]]}
     ],
     LEAD: [
         {name: 'Neuro Twister', wave: 'sawtooth', p: {bpm:140, freq:110, noise:30, det:80, atk:0.005, len:0.2, sub:0, cut:2500, res:25, drv:80, dly:20, rev:20, fm:1200}, seq: pr_acid1},
         {name: 'Screaming Sync', wave: 'square', p: {bpm:145, freq:150, noise:2, det:40, atk:0.005, len:0.25, sub:0, cut:5000, res:22, drv:45, dly:25, rev:30, fm:500}, seq: pr_daFunk},
-        {name: 'Alien Pulse', wave: 'triangle', p: {bpm:140, freq:220, noise:50, det:20, atk:0.01, len:0.1, sub:0, cut:3000, res:15, drv:10, dly:35, rev:40, fm:1800}, seq: pr_hiAlt}
+        {name: 'Alien Pulse', wave: 'triangle', p: {bpm:140, freq:220, noise:50, det:20, atk:0.01, len:0.1, sub:0, cut:3000, res:15, drv:10, dly:35, rev:40, fm:1800}, seq: pr_rumble}
     ],
     FX: [
         {name: 'Cosmic Wind', wave: 'sine', p: {bpm:120, freq:800, noise:100, det:0, atk:0.8, len:1.5, sub:0, cut:2000, res:5, drv:0, dly:60, rev:90, fm:500}, seq: pr_rumble},
@@ -202,60 +199,28 @@ const presets = {
 const categories = Object.keys(presets);
 let currentCatIdx = 0, currentPreIdx = 0;
 
-function updatePresetDisplay() {
-    const cat = categories[currentCatIdx], pre = presets[cat][currentPreIdx];
-    document.getElementById('lcd-cat').innerText = cat;
-    document.getElementById('lcd-name').innerText = pre.name;
-    setWave(pre.wave);
-    for (let key in pre.p) {
-        state[key] = pre.p[key];
-        const el = document.getElementById(`k-${key}`);
-        if (el) updateKnob(el, state[key]);
-    }
-    if (pre.seq) {
-        pre.seq.forEach((sData, i) => {
-            if(i < 16) {
-                stepData[i].on = sData[0] === 1;
-                stepData[i].noteIdx = sData[1];
-                stepData[i].note = noteMultipliers[sData[1]];
-                stepData[i].oct = sData[2];
-                document.getElementById('step-'+i).classList.toggle('on', stepData[i].on);
-                const u = document.querySelectorAll('.step-unit')[i];
-                u.querySelectorAll('select')[0].selectedIndex = stepData[i].noteIdx;
-                u.querySelectorAll('select')[1].value = stepData[i].oct;
-            }
-        });
-    }
-    if(ctx) updateAudio();
+// Init Seq
+const grid = document.getElementById('seq');
+for(let i=0; i<16; i++) {
+    const unit = document.createElement('div'); unit.className = 'step-unit';
+    const s = document.createElement('div'); s.className = 'step'; s.id = 'step-'+i;
+    s.onclick = () => { stepData[i].on = !stepData[i].on; s.classList.toggle('on', stepData[i].on); };
+    const nSel = document.createElement('select'); nSel.className = 'note-sel';
+    noteNames.forEach((n, idx) => { let o = new Option(n, noteMultipliers[idx]); nSel.add(o); });
+    nSel.onchange = (e) => { stepData[i].note = parseFloat(e.target.value); stepData[i].noteIdx = e.target.selectedIndex; };
+    const oSel = document.createElement('select'); oSel.className = 'oct-sel';
+    [0.5, 1, 2, 4].forEach(v => { let o = new Option(v+'x', v); if(v===1) o.selected=true; oSel.add(o); });
+    oSel.onchange = (e) => stepData[i].oct = parseFloat(e.target.value);
+    unit.append(s, nSel, oSel); grid.appendChild(unit);
 }
 
-// Re-init knob system
-const knobDefs = [
-    {id:'bpm', min:80, max:200, label:'BPM'},
-    {id:'swg', min:0, max:100, label:'SWING'},
-    {id:'freq', min:30, max:300, label:'ROOT'},
-    {id:'cut', min:100, max:8000, label:'CUTOFF'},
-    {id:'res', min:0, max:30, label:'RESO'},
-    {id:'atk', min:0.005, max:1, label:'ATTACK'},
-    {id:'len', min:0.05, max:1.5, label:'LENGTH'},
-    {id:'sub', min:0, max:100, label:'SUB'},
-    {id:'noise', min:0, max:100, label:'NOISE', hasWP:true},
-    {id:'det', min:0, max:100, label:'DETUNE'},
-    {id:'drv', min:1, max:100, label:'DRIVE'},
-    {id:'fm', min:0, max:2000, label:'FM'},
-    {id:'dly', min:0, max:100, label:'DELAY'},
-    {id:'rev', min:0, max:100, label:'REVERB'}
-];
+function updateLoopLen(val) { 
+    loopSteps = val; 
+    document.querySelectorAll('.len-btn').forEach((b,idx) => b.classList.toggle('active', idx+1 === val));
+    document.querySelectorAll('.step-unit').forEach((unit, idx) => { unit.classList.toggle('disabled', idx >= val); });
+}
 
-const kWrap = document.getElementById('knob-container');
-knobDefs.forEach(d => {
-    const box = document.createElement('div'); box.className = 'k-box';
-    let waveHtml = (d.id === 'freq') ? `<div class="wave-grid"><button class="w-btn active" data-w="sawtooth" onclick="setWave('sawtooth')">SAW</button><button class="w-btn" data-w="square" onclick="setWave('square')">SQR</button><button class="w-btn" data-w="triangle" onclick="setWave('triangle')">TRI</button><button class="w-btn" data-w="sine" onclick="setWave('sine')">SIN</button></div>` : '';
-    box.innerHTML = `${waveHtml}<span class="k-label">${d.label}</span><div style="display:flex; align-items:center;"><div class="k-knob-wrapper" id="w-${d.id}"><div class="k-led-ring" id="r-${d.id}"></div><div class="k-knob" id="k-${d.id}" data-min="${d.min}" data-max="${d.max}" data-val="${state[d.id]}"></div></div>${d.hasWP ? '<div class="wp-btn" id="wp-toggle" onclick="toggleNoiseType()">W/P</div>':''}</div><span class="k-val" id="v-${d.id}">${state[d.id]}</span>`;
-    kWrap.appendChild(box);
-});
-
-// Audio Engine & Scheduler
+// Audio Engine (Logic Intact)
 function initAudio() {
     ctx = new (window.AudioContext || window.webkitAudioContext)(); recDest = ctx.createMediaStreamDestination(); driveNode = ctx.createWaveShaper(); filter = ctx.createBiquadFilter(); noteGain = ctx.createGain(); masterGain = ctx.createGain(); delayNode = ctx.createDelay(1.0); delayGain = ctx.createGain(); panner = ctx.createStereoPanner();
     let fb = ctx.createGain(); fb.gain.value = 0.45; delayNode.connect(fb); fb.connect(delayNode);
@@ -301,20 +266,24 @@ function updateAudio() {
     driveNode.curve = (function(k){ let n = 44100, curve = new Float32Array(n), x; for(let i=0; i<n; i++) { x = i*2/n-1; curve[i] = (3+k)*x*20*(Math.PI/180)/(Math.PI+k*Math.abs(x)); } return curve; })(state.drv);
 }
 
-// UI Setup & Actions
-const grid = document.getElementById('seq');
-for(let i=0; i<16; i++) {
-    const unit = document.createElement('div'); unit.className = 'step-unit';
-    const s = document.createElement('div'); s.className = 'step'; s.id = 'step-'+i;
-    s.onclick = () => { stepData[i].on = !stepData[i].on; s.classList.toggle('on', stepData[i].on); };
-    const nSel = document.createElement('select'); nSel.className = 'note-sel';
-    noteNames.forEach((n, idx) => { let o = new Option(n, noteMultipliers[idx]); nSel.add(o); });
-    nSel.onchange = (e) => { stepData[i].note = parseFloat(e.target.value); stepData[i].noteIdx = e.target.selectedIndex; };
-    const oSel = document.createElement('select'); oSel.className = 'oct-sel';
-    [0.5, 1, 2, 4].forEach(v => { let o = new Option(v+'x', v); if(v===1) o.selected=true; oSel.add(o); });
-    oSel.onchange = (e) => stepData[i].oct = parseFloat(e.target.value);
-    unit.append(s, nSel, oSel); grid.appendChild(unit);
-}
+// Knob Definitions
+const knobDefs = [
+    {id:'bpm', min:80, max:200, label:'BPM'}, {id:'swg', min:0, max:100, label:'SWING'},
+    {id:'freq', min:30, max:300, label:'ROOT'}, {id:'cut', min:100, max:8000, label:'CUTOFF'},
+    {id:'res', min:0, max:30, label:'RESO'}, {id:'atk', min:0.005, max:1, label:'ATTACK'},
+    {id:'len', min:0.05, max:1.5, label:'LENGTH'}, {id:'sub', min:0, max:100, label:'SUB'},
+    {id:'noise', min:0, max:100, label:'NOISE', hasWP:true}, {id:'det', min:0, max:100, label:'DETUNE'},
+    {id:'drv', min:1, max:100, label:'DRIVE'}, {id:'fm', min:0, max:2000, label:'FM'},
+    {id:'dly', min:0, max:100, label:'DELAY'}, {id:'rev', min:0, max:100, label:'REVERB'}
+];
+
+const kWrap = document.getElementById('knob-container');
+knobDefs.forEach(d => {
+    const box = document.createElement('div'); box.className = 'k-box';
+    let waveHtml = (d.id === 'freq') ? `<div class="wave-grid"><button class="w-btn active" data-w="sawtooth" onclick="setWave('sawtooth')">SAW</button><button class="w-btn" data-w="square" onclick="setWave('square')">SQR</button><button class="w-btn" data-w="triangle" onclick="setWave('triangle')">TRI</button><button class="w-btn" data-w="sine" onclick="setWave('sine')">SIN</button></div>` : '';
+    box.innerHTML = `${waveHtml}<span class="k-label">${d.label}</span><div style="display:flex; align-items:center;"><div class="k-knob-wrapper" id="w-${d.id}"><div class="k-led-ring" id="r-${d.id}"></div><div class="k-knob" id="k-${d.id}" data-min="${d.min}" data-max="${d.max}" data-val="${state[d.id]}"></div></div>${d.hasWP ? '<div class="wp-btn" id="wp-toggle" onclick="toggleNoiseType()">W/P</div>':''}</div><span class="k-val" id="v-${d.id}">${state[d.id]}</span>`;
+    kWrap.appendChild(box);
+});
 
 document.querySelectorAll('.k-knob-wrapper').forEach(wrapper => {
     let y = 0, drag = false; const knob = wrapper.querySelector('.k-knob');
@@ -331,19 +300,34 @@ function updateKnob(el, val) {
     if(ctx) updateAudio();
 }
 
+function updatePresetDisplay() {
+    const cat = categories[currentCatIdx], pre = presets[cat][currentPreIdx];
+    document.getElementById('lcd-cat').innerText = cat; document.getElementById('lcd-name').innerText = pre.name;
+    setWave(pre.wave);
+    for (let key in pre.p) { state[key] = pre.p[key]; const el = document.getElementById(`k-${key}`); if (el) updateKnob(el, state[key]); }
+    if (pre.seq) {
+        pre.seq.forEach((sData, i) => {
+            if(i < 16) {
+                stepData[i].on = sData[0] === 1; stepData[i].noteIdx = sData[1]; stepData[i].note = noteMultipliers[sData[1]]; stepData[i].oct = sData[2];
+                document.getElementById('step-'+i).classList.toggle('on', stepData[i].on);
+                const u = document.querySelectorAll('.step-unit')[i]; u.querySelectorAll('select')[0].selectedIndex = stepData[i].noteIdx; u.querySelectorAll('select')[1].value = stepData[i].oct;
+            }
+        });
+    }
+    if(ctx) updateAudio();
+}
+
+// Controls Logic
 function nextPreset() { currentPreIdx++; if (currentPreIdx >= presets[categories[currentCatIdx]].length) { currentPreIdx = 0; currentCatIdx = (currentCatIdx + 1) % categories.length; } updatePresetDisplay(); }
 function prevPreset() { currentPreIdx--; if (currentPreIdx < 0) { currentCatIdx = (currentCatIdx - 1 + categories.length) % categories.length; currentPreIdx = presets[categories[currentCatIdx]].length - 1; } updatePresetDisplay(); }
-
 function toggleAudio() { if(!ctx) initAudio(); if(ctx.state==='suspended') ctx.resume(); isStarted=!isStarted; document.getElementById('start').classList.toggle('active'); }
 function switchMode() { synthMode=(synthMode==='LEAD'?'PERC':'LEAD'); document.getElementById('mode').innerText='MODE:'+synthMode; document.getElementById('mode').classList.toggle('active'); }
 function randSeq() { 
-    document.getElementById('rand-btn').classList.add('active');
-    setTimeout(() => document.getElementById('rand-btn').classList.remove('active'), 200);
+    document.getElementById('rand-btn').classList.add('active'); setTimeout(() => document.getElementById('rand-btn').classList.remove('active'), 200);
     stepData.forEach((d, i) => { d.on = Math.random() > 0.3; d.noteIdx = Math.floor(Math.random()*12); d.note = noteMultipliers[d.noteIdx]; d.oct = [0.5, 1, 2][Math.floor(Math.random()*3)]; document.getElementById('step-'+i).classList.toggle('on', d.on); const u = document.querySelectorAll('.step-unit')[i]; u.querySelectorAll('select')[0].selectedIndex = d.noteIdx; u.querySelectorAll('select')[1].value = d.oct; }); 
 }
 function panic() { 
-    document.getElementById('panic-btn').classList.add('active');
-    setTimeout(() => document.getElementById('panic-btn').classList.remove('active'), 200);
+    document.getElementById('panic-btn').classList.add('active'); setTimeout(() => document.getElementById('panic-btn').classList.remove('active'), 200);
     document.querySelectorAll('.k-knob').forEach(k => { const id = k.id.split('-')[1]; if(id!=='vol'&&id!=='bpm'&&id!=='swg') updateKnob(k, Math.random()*(k.dataset.max-k.dataset.min)+ +k.dataset.min); }); 
 }
 function toggleRec() { if(!isStarted) return; if(!recording && !pendingRec) pendingRec = true; else if(recording) pendingStop = true; }
@@ -353,10 +337,19 @@ function toggleNoiseType() { isPinkNoise = !isPinkNoise; document.getElementById
 function setWave(w) { currentWave = w; document.querySelectorAll('.w-btn').forEach(b => b.classList.toggle('active', b.dataset.w === w)); if(ctx) mainOsc.type = w; }
 function randomizeSkin() { const h1 = Math.floor(Math.random()*360); document.documentElement.style.setProperty('--step-color', `hsl(${h1}, 80%, 60%)`); document.documentElement.style.setProperty('--ui-accent', `hsl(${(h1+180)%360}, 80%, 70%)`); }
 
-// Modal logic
+// MODALS
+function openCreditsModal() {
+    const modal = document.getElementById('presetModal');
+    const listContainer = document.getElementById('modal-preset-list');
+    document.getElementById('modal-title-text').innerText = "SYSTEM INFO & CREDITS";
+    listContainer.innerHTML = `<div class="modal-category" style="grid-column: span 2; padding: 20px; background: rgba(0,0,0,0.6); border: 1px solid var(--ui-accent);"><div class="cat-title" style="color:var(--ui-accent); font-size:16px; margin-bottom:15px;">RELEASE NOTES - Ver. 1.2.5</div><p style="font-size:12px; line-height:1.6; color:#fff;">• <b>Display Upgrade:</b> New vertical LCD layout with enhanced font rendering.<br>• <b>UI Polish:</b> Better touch targets for iPad navigation.<br>• <b>Factory Presets:</b> All 20+ Acid, Rumble, Bass, Lead and FX slots active.<br>• <b>Logic:</b> High-precision sequencer timing and 303 emulation.</p><p style="margin-top:25px; font-family:'Permanent Marker'; font-size:1.2rem; color:var(--ui-accent);">Project by Lux Stiffmeister</p></div>`;
+    modal.style.display = 'flex';
+}
+
 function openPresetModal() {
     const modal = document.getElementById('presetModal');
     const listContainer = document.getElementById('modal-preset-list');
+    document.getElementById('modal-title-text').innerText = "PRESET LIST";
     listContainer.innerHTML = '';
     categories.forEach((cat, catIdx) => {
         const catBox = document.createElement('div'); catBox.style.border = '1px solid #333'; catBox.style.padding='10px';
@@ -373,16 +366,17 @@ function openPresetModal() {
     });
     modal.style.display = 'flex';
 }
+
 function closeModal(e) { if(e.target.className === 'modal') e.target.style.display = 'none'; }
 
+// Init
 const lenBar = document.getElementById('len-btns'); 
 for(let i=1; i<=16; i++){ 
     const b = document.createElement('div'); b.className = 'len-btn'; b.innerText = i; if(i===16) b.classList.add('active'); 
     b.onclick = () => updateLoopLen(i); lenBar.appendChild(b); 
 }
-function updateLoopLen(val) { loopSteps = val; document.querySelectorAll('.len-btn').forEach((b,idx) => b.classList.toggle('active', idx+1 === val)); }
 
-window.onload = () => { updatePresetDisplay(); };
+window.onload = () => { updateLoopLen(16); updatePresetDisplay(); };
 </script>
 </body>
 </html>
